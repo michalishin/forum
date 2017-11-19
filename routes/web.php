@@ -30,8 +30,14 @@ app('router')
 app('router')->post('/threads/{thread}/replies', 'ReplyController@store')
     ->name('replies.store');
 
+app('router')->delete('/replies/{reply}/favorite', 'FavoriteController@destroy')
+    ->name('replies.un_favorite');
+
 app('router')->delete('/replies/{reply}', 'ReplyController@destroy')
     ->name('replies.destroy');
+
+app('router')->put('/replies/{reply}', 'ReplyController@update')
+    ->name('replies.update');
 
 app('router')->post('/replies/{reply}/favorite', 'FavoriteController@store')
     ->name('replies.favorite');

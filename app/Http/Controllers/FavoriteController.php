@@ -20,6 +20,14 @@ class FavoriteController extends Controller
      */
     public function store(Reply $reply) {
         $reply->favorite();
-        return back();
+    }
+
+    /**
+     * A route for un_favorite replies
+     * @param Reply $reply
+     * @return mixed
+     */
+    public function destroy(Reply $reply) {
+        $reply->unFavorite();
     }
 }

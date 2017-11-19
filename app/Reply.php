@@ -17,6 +17,7 @@ class Reply extends Model
 
     protected $with = ['owner', 'thread', 'favorites'];
     protected $fillable = ['body', 'user_id'];
+    protected $appends = ['favorites_count', 'is_favorited'];
 
     public function owner () {
         return $this->belongsTo(User::class, 'user_id');

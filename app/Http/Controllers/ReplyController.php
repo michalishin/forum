@@ -87,7 +87,13 @@ class ReplyController extends Controller
      */
     public function update(Request $request, Reply $reply)
     {
-        //
+        $this->authorize('update', $reply);
+
+        $request->validate([
+            'body' => 'required'
+        ]);
+
+        $reply->update($request->all());
     }
 
     /**
@@ -102,6 +108,9 @@ class ReplyController extends Controller
 
         $reply->delete();
 
+        if (request()->expectsJson()) {
+            return response('OK');
+        }
         return back();
     }
 }

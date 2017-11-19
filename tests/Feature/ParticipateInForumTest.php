@@ -9,6 +9,7 @@ use Illuminate\Auth\AuthenticationException;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
 use Tests\TestCase;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Faker\Generator as Faker;
 
 class ParticipateInForumTest extends TestCase
 {
@@ -71,5 +72,49 @@ class ParticipateInForumTest extends TestCase
         $this->assertDatabaseMissing('replies', [
             'id' => $reply->id
         ]);
+    }
+
+    /** @test */
+    public function unatorized_users_cannot_update_replies () {
+        $reply =  create('App\Reply');
+        $this->enableExceptionHandling()
+            ->put(route('replies.update', $reply))
+            ->assertRedirect(route('login'));
+
+        $this->signIn();
+
+        $this->delete(route('replies.destroy', $reply))
+            ->assertStatus(403);
+    }
+
+    /** @test */
+    public function users_can_update_own_replies () {
+        $faker = $this->getFaker();
+        $this->signIn();
+
+        $reply =  create(Reply::class, [
+            'user_id' => auth()->id()
+        ]);
+        $body = $faker->paragraph();
+        $this->put(route('replies.update', $reply), compact('body'))
+            ->assertStatus(200);
+        $this->assertDatabaseHas('replies', [
+            'id' => $reply->id,
+            'body' => $body
+        ]);
+    }
+
+    /** @test */
+    public function a_thread_update_validation_test () {
+        $this->signIn();
+
+        $this->enableExceptionHandling()->signIn();
+        $reply = create(Reply::class, [
+            'user_id' => auth()->id()
+        ]);
+
+        $this->put(route('replies.update', $reply), [
+            'body' => null
+        ])->assertSessionHasErrors('body');
     }
 }

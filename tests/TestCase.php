@@ -5,6 +5,7 @@ namespace Tests;
 use App\Exceptions\Handler;
 use App\User;
 use Exception;
+use Faker\Generator as Faker;
 use Illuminate\Contracts\Container\Container;
 use Illuminate\Contracts\Debug\ExceptionHandler;
 use Illuminate\Foundation\Testing\TestCase as BaseTestCase;
@@ -37,5 +38,14 @@ abstract class TestCase extends BaseTestCase
     public function enableExceptionHandling () {
         $this->app->instance(ExceptionHandler::class, $this->oldException);
         return $this;
+    }
+
+    /**
+     * @return \Illuminate\Foundation\Application|mixed
+     */
+    protected function getFaker()
+    {
+        $faker = app(Faker::class);
+        return $faker;
     }
 }
