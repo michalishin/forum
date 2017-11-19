@@ -1,27 +1,69 @@
+<template>
+    <div :id="'reply-' + id" class="panel panel-default">
+        <div class="panel-heading">
+            <div class="level">
+                <h5 class="flex">
+                    <a :href="'profiles /'+ data.owner.name" v-text="data.owner.name"></a>
+                    said
+                    {{data.created_at}}...
+                </h5>
+
+                <div v-if="signedIn">
+                    <favorite :reply="data"></favorite>
+                </div>
+            </div>
+
+        </div>
+        <div class="panel-body">
+            <div v-if="editing">
+                <div class="form-group">
+                    <textarea class="form-control" v-model="body"></textarea>
+                </div>
+                <button class="btn btn-xs btn-primary" @click="update">Update</button>
+                <button class="btn btn-xs btn-link" @click="editing = false">Cancel</button>
+            </div>
+            <div v-else v-text="body"></div>
+        </div>
+        <!--@can('delete', $reply)-->
+        <div class="panel-footer level" v-if="canUpdate">
+            <div class="btn btn-xs mr-1" @click="editing = true">Edit</div>
+            <div class="btn btn-xs btn-danger mr-1" @click="destroy">Delete</div>
+        </div>
+        <!--@endcan-->
+    </div>
+</template>
+
 <script>
     import Favorite from './Favorite.vue'
     export default {
         components: {Favorite},
-        props: ['attributes'],
+        props: ['data'],
         data () {
             return {
-                body: this.attributes.body,
-                editing: false
+                body: this.data.body,
+                editing: false,
+                id: this.data.id
             }
         },
         methods: {
             update () {
-                axios.put('/replies/' + this.attributes.id, {
+                axios.put('/replies/' + this.data.id, {
                     body: this.body
                 })
                 flash('Updated!')
                 this.editing = false
             },
             destroy () {
-                axios.delete('/replies/' + this.attributes.id)
-                $(this.$el).fadeOut(300, () => {
-                    flash('Your reply has been deleted.')
-                })
+                axios.delete('/replies/' + this.data.id)
+                this.$emit('deleted', this.data.id)
+            }
+        },
+        computed: {
+            canUpdate () {
+                return this.autorize(user => this.data.user_id === user.id)
+            },
+            signedIn () {
+                return window.App.signedIn
             }
         }
     }

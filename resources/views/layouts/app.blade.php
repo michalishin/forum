@@ -29,6 +29,13 @@
             display: none;
         }
     </style>
+
+    <script>
+        window.App = {!! json_encode([
+            'signedIn' => auth()->check(),
+            'user' => auth()->user()
+        ])!!}
+    </script>
 </head>
 <body>
     <div id="app">

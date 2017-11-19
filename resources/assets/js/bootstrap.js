@@ -52,3 +52,9 @@ if (token) {
 //     key: 'your-pusher-key'
 // });
 
+window.Vue = require('vue')
+window.Vue.prototype.autorize = handler => {
+    let user = window.App.user
+    return user ? handler(user) : false
+}
+
