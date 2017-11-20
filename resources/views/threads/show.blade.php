@@ -39,26 +39,15 @@
                         </div>
                     </div>
 
-                    <replies :data="{{$thread->replies}}" @removed="repliesCount--"></replies>
+                    <replies tread_id="{{$thread->id}}"
+                             :data="{{$thread->replies}}"
+                             @removed="repliesCount --"
+                             @added="repliesCount ++"
+                    ></replies>
 
                     {{--{{$replies->links()}}--}}
 
-                    @auth
-                        <form method="POST" action="{{route('replies.store', $thread)}}">
-                            {{csrf_field()}}
-                            <div class="form-group">
-                    <textarea name="body"
-                              id="reply-body"
-                              placeholder="Have something to say?"
-                              rows="5"
-                              class="form-control"></textarea>
-                            </div>
-                            <button type="submit" class="btn btn-default">Post</button>
-                        </form>
-                    @endauth
-                    @guest
-                        <p class="text-center">Please <a href="{{route('login')}}">sign in</a> to participate in this discussion</p>
-                    @endguest
+
                 </div>
                 <div class="col-md-4">
                     <div class="panel panel-default">
