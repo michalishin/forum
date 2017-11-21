@@ -57,6 +57,10 @@ class Thread extends Model
     }
 
     public function subscribe($userId = null) {
+        $subscribed = $this->subscriptions()
+            ->where([ "user_id" => $userId ?: auth()->id()])
+            ->exists();
+        if ($subscribed) return;
         return $this->subscriptions()->create([
            "user_id" => $userId ?: auth()->id()
         ]);

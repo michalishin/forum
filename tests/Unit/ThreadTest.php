@@ -68,6 +68,23 @@ class ThreadTest extends TestCase
     }
 
     /** @test */
+    public function a_thread_cant_be_subscribed_twice () {
+        $thread = create(Thread::class);
+
+        $this->signIn();
+
+        $thread->subscribe();
+        $thread->subscribe();
+
+        $subscriptions = $thread->subscriptions()
+            ->where(['user_id' => auth()->id()])
+            ->get();
+
+        $this->assertCount(1, $subscriptions);
+
+    }
+
+    /** @test */
     public function a_thread_can_be_unsubscribed_to () {
         $thread = create(Thread::class);
 
