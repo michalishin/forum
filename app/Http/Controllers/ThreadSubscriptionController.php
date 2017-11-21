@@ -12,11 +12,11 @@ class ThreadSubscriptionController extends Controller
         $this->middleware('auth');
     }
 
-    public function store ($channelID, Thread $thread) {
+    public function store (Thread $thread) {
         $thread->subscribe();
     }
 
-    public function destroy ($channelID, Thread $thread) {
+    public function destroy (Thread $thread) {
         $thread->unsubscribe();
     }
 }

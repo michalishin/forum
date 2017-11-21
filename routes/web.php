@@ -24,11 +24,11 @@ app('router')
     ->name('threads.show');
 
 app('router')
-    ->post('threads/{channel}/{thread}/subscriptions', 'ThreadSubscriptionController@store')
+    ->post('threads/{thread}/subscriptions', 'ThreadSubscriptionController@store')
     ->name('threads.subscribe');
 
 app('router')
-    ->delete('threads/{channel}/{thread}/subscriptions', 'ThreadSubscriptionController@destroy')
+    ->delete('threads/{thread}/subscriptions', 'ThreadSubscriptionController@destroy')
     ->name('threads.unsubscribe');
 
 app('router')

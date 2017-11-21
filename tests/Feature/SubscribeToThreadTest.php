@@ -20,7 +20,7 @@ class SubscribeToThreadTest extends TestCase
         $thread = create(Thread::class);
         $this->signIn();
 
-        $this->post(route('threads.subscribe', [$thread->channel, $thread]))
+        $this->post(route('threads.subscribe', $thread))
             ->assertStatus(200);
 
         $this->assertDatabaseHas('thread_subscriptions', [
@@ -45,7 +45,7 @@ class SubscribeToThreadTest extends TestCase
 
         $thread->subscribe();
 
-        $this->delete(route('threads.unsubscribe', [$thread->channel, $thread]))
+        $this->delete(route('threads.unsubscribe', $thread))
             ->assertStatus(200);
 
         $this->assertDatabaseMissing('thread_subscriptions', [

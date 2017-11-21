@@ -41,21 +41,26 @@
 
                     <replies tread_id="{{$thread->id}}"
                              @removed="repliesCount --"
-                             @added="repliesCount ++"
-                    ></replies>
-
-                    {{--{{$replies->links()}}--}}
-
+                             @added="repliesCount ++">
+                    </replies>
 
                 </div>
                 <div class="col-md-4">
                     <div class="panel panel-default">
                         <div class="panel-body">
-                            This thread wash publish {{$thread->created_at->diffForHumans()}}
-                            by<a href="{{route('user.profile',$thread->creator)}}"> {{$thread->creator->name}} </a>
-                            and currently has
-                            <span v-text="repliesCount"></span>
-                            {{str_plural('comment', $thread->replies_count)}}
+                            <p>
+                                This thread wash publish {{$thread->created_at->diffForHumans()}}
+                                by<a href="{{route('user.profile',$thread->creator)}}"> {{$thread->creator->name}} </a>
+                                and currently has
+                                <span v-text="repliesCount"></span>
+                                {{str_plural('comment', $thread->replies_count)}}
+                            </p>
+                            <p>
+                                <subscribe-button
+                                        id="{{$thread->id}}"
+                                        :active="{{$thread->is_subscribed_to ? 'true' : 'false'}}"
+                                ></subscribe-button>
+                            </p>
                         </div>
                     </div>
                 </div>

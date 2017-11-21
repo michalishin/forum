@@ -85,6 +85,24 @@ class ThreadTest extends TestCase
     }
 
     /** @test */
+    public function it_knows_if_user_is_subscribed_to_it () {
+        $thread = create(Thread::class);
+        $this->signIn();
+
+        $thread->subscribe();
+        $this->assertEquals(
+            $thread->is_subscribed_to,
+            true
+        );
+
+        $thread->unsubscribe();
+        $this->assertEquals(
+            $thread->is_subscribed_to,
+            false
+        );
+    }
+
+    /** @test */
     public function a_thread_can_be_unsubscribed_to () {
         $thread = create(Thread::class);
 

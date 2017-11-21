@@ -75,10 +75,8 @@ class ThreadController extends Controller
      */
     public function show(Channel $channel, Thread $thread)
     {
-        return view('threads.show', [
-            'thread' => $thread
-           // 'replies' => $thread->replies()->paginate(5)
-        ]);
+        $thread->append('is_subscribed_to');
+        return view('threads.show', compact('thread'));
     }
 
     /**
