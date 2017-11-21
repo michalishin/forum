@@ -1,6 +1,6 @@
 <template>
     <button class="btn"
-            :class="active ? 'btn-primary' : 'btn-default'"
+            :class="state ? 'btn-primary' : 'btn-default'"
             @click="toggle">
         Subscribe
     </button>
@@ -12,19 +12,20 @@
 
         data () {
           return {
-              url: `/threads/${this.id}/subscriptions`
+              url: `/threads/${this.id}/subscriptions`,
+              state: this.active
           }
         },
 
         methods: {
             toggle () {
-                !this.active ? this.subscribe() : this.unsubscribe()
+                !this.state ? this.subscribe() : this.unsubscribe()
             },
 
             subscribe () {
                 axios.post(this.url)
 
-                this.active = true
+                this.state = true
 
                 flash('Subscribed')
             },
@@ -32,7 +33,7 @@
             unsubscribe () {
                 axios.delete(this.url)
 
-                this.active = false
+                this.state = false
 
                 flash('Unsubscribed')
             }
