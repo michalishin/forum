@@ -49,6 +49,39 @@ class ThreadTest extends TestCase
                 $thread->id
             ])
         );
+    }
+
+    /** @test */
+    public function a_thread_can_be_subscribed_to () {
+        $thread = create(Thread::class);
+
+        $this->signIn();
+
+        $thread->subscribe();
+
+        $subscriptions = $thread->subscriptions()
+            ->where(['user_id' => auth()->id()])
+            ->get();
+
+        $this->assertCount(1, $subscriptions);
+
+    }
+
+    /** @test */
+    public function a_thread_can_be_unsubscribed_to () {
+        $thread = create(Thread::class);
+
+        $this->signIn();
+
+        $thread->subscribe();
+
+        $thread->unsubscribe();
+
+        $subscriptions = $thread->subscriptions()
+            ->where(['user_id' => auth()->id()])
+            ->get();
+
+        $this->assertCount(0, $subscriptions);
 
     }
 }
