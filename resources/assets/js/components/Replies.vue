@@ -4,40 +4,51 @@
             <reply :data="reply" @deleted="remove(index)"></reply>
         </div>
 
-        <new-reply :endpoint="storeEndpoint" @created="add">
+        <paginator :dataSet="dataSet" @change-page="fetch"></paginator>
 
-        </new-reply>
+        <new-reply :endpoint="endpoint" @created="add"></new-reply>
     </div>
 </template>
 
 <script>
     import Reply from './Reply.vue'
     import NewReply from './NewReply.vue'
+    import collection from '../mixins/collection'
     export default {
-        props: ['data' , 'tread_id'],
+        props: ['tread_id'],
+
+        mixins: [collection],
 
         components: {Reply, NewReply},
 
         data () {
             return {
-                items: this.data,
-                storeEndpoint: '/threads/' + this.tread_id + '/replies'
+                dataSet: false,
+                endpoint: '/threads/' + this.tread_id + '/replies'
             }
         },
 
+        created () {
+            this.fetch()
+        },
+
         methods: {
-            remove (index) {
-                this.$delete(this.items, index)
-
-                this.$emit('removed')
-
-                flash('Reply was deleted!')
+            fetch (page) {
+                if (!page) page = this.getDefaultPage()
+                let params = {page}
+                axios.get(this.endpoint, {params})
+                    .then(this.refresh)
             },
 
-            add (reply) {
-                this.items.push(reply)
+            getDefaultPage () {
+                let query = location.search.match(/page=(\d+)/)
 
-                this.$emit('added')
+                return query ? query[1] : 1
+            },
+
+            refresh ({data}) {
+                this.dataSet = data
+                this.items = data.data
             }
         }
     }

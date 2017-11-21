@@ -52,10 +52,11 @@ class ReadThreadsTest extends TestCase
         $reply = create(Reply::class, [
            'thread_id' => $thread
         ]);
-        $response = $this->get($thread->getRouteUrl());
-        $response->assertSee($reply->body);
-        $response->assertSee($reply->created_at->diffForHumans());
-        $response->assertSee($reply->owner->name);
+
+        $this->getJson(route('replies.index', $thread))
+            ->assertJsonFragment(
+                ['body' => $reply->body]
+            );
     }
 
     /** @test */
@@ -146,5 +147,19 @@ class ReadThreadsTest extends TestCase
             ->delete(route('threads.destroy', $thread))
             ->assertStatus(403);
         $this->assertDatabaseHas('threads', $thread->only(['id']));
+    }
+
+    /** @test */
+    public function a_user_can_request_all_replies_for_a_given_thread () {
+        $thread = create(Thread::class);
+        create(Reply::class,[
+            'thread_id' => $thread->id
+        ], 10);
+
+        $data = $this->getJson(route('replies.index', $thread))->json();
+
+        $this->assertCount(5, $data['data']);
+        $this->assertEquals(10, $data['total']);
+
     }
 }

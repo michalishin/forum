@@ -40,7 +40,6 @@
                     </div>
 
                     <replies tread_id="{{$thread->id}}"
-                             :data="{{$thread->replies}}"
                              @removed="repliesCount --"
                              @added="repliesCount ++"
                     ></replies>

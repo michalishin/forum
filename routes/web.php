@@ -15,6 +15,10 @@ app('router')->get('/', function () {
     return view('welcome');
 });
 
+
+app('router')->get('/threads/{thread}/replies', 'ReplyController@index')
+    ->name('replies.index');
+
 app('router')
     ->get('threads/{channel}/{thread}', 'ThreadController@show')
     ->name('threads.show');
@@ -23,12 +27,15 @@ app('router')
     ->resource('threads', 'ThreadController')
     ->only(['index', 'create', 'store', 'destroy']);
 
+
+
 app('router')
     ->get('threads/{channel}', 'ThreadController@index')
     ->name('channel');
 
 app('router')->post('/threads/{thread}/replies', 'ReplyController@store')
     ->name('replies.store');
+
 
 app('router')->delete('/replies/{reply}/favorite', 'FavoriteController@destroy')
     ->name('replies.un_favorite');
