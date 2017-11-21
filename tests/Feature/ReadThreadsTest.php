@@ -98,6 +98,18 @@ class ReadThreadsTest extends TestCase
     }
 
     /** @test */
+    public function a_user_can_filter_unanswered_threads() {
+        $unansweredThread = create(Thread::class);
+        $answeredThread = create(Thread::class);
+        create(Reply::class,[
+            'thread_id' => $answeredThread
+        ]);
+        $response = $this->getJson(route('threads.index') . '?unanswered=1')
+            ->assertJsonFragment(['body' => $unansweredThread->body])
+            ->assertJsonMissing(['body' => $answeredThread->body]);
+    }
+
+    /** @test */
     public function a_guest_can_not_delete_thread () {
         $user = create(User::class);
         $thread = create(Thread::class);

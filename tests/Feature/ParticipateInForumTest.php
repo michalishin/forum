@@ -23,6 +23,10 @@ class ParticipateInForumTest extends TestCase
         $this->post(route('replies.store', $thread), $reply->toArray())
             ->assertRedirect();
 
+        $this->assertDatabaseHas('replies', [
+           'body' =>  $reply->body
+        ]);
+
         $this->getJson(route('replies.index', $thread))
             ->assertJsonFragment(['body' => $reply->body]);
     }
