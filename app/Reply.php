@@ -2,6 +2,7 @@
 
 namespace App;
 
+use App\Notifications\ThreadWasUpdated;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 
@@ -10,10 +11,26 @@ use Illuminate\Database\Eloquent\Model;
  * @property Thread thread
  * @property integer id
  * @property integer user_id
+ * @property User owner
  */
 class Reply extends Model
 {
     use Favoritable, RecordsActivity;
+
+    public static function boot() {
+        self::created(function (self $reply) {
+            $reply
+                ->load('thread.subscriptions.user')
+                ->thread
+                ->subscriptions
+                ->filter(function ($subscription) use ($reply) {
+                    return $subscription->user_id !== $reply->user_id;
+                })
+                ->each(function (ThreadSubscription $subscription) use ($reply) {
+                    $subscription->user->notify(new ThreadWasUpdated($reply));
+                });
+        });
+    }
 
     protected $with = ['owner', 'thread', 'favorites'];
     protected $fillable = ['body', 'user_id'];

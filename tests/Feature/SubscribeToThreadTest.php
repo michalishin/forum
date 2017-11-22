@@ -27,15 +27,6 @@ class SubscribeToThreadTest extends TestCase
             'thread_id' => $thread->id,
             'user_id' => auth()->id()
         ]);
-
-        create(Reply::class, [
-            'thread_id' => $thread
-        ]);
-
-//        $this->assertCount(
-//            1,
-//            auth()->user()->notification
-//        );
    }
 
     /** @test */

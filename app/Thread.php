@@ -14,6 +14,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @property User creator
  * @property int user_id
  * @property Collection replies
+ * @property Collection subscriptions
  * @method static self create(array $data)
  * @package App
  */
