@@ -137,12 +137,18 @@ class ReadThreadsTest extends TestCase
 
         $this->json('DELETE', route('threads.destroy', $thread))
             ->assertStatus(204);
+
         $this->assertDatabaseMissing('threads', $thread->toArray());
-        $this->assertDatabaseMissing('replies', $reply->toArray());
+
+        $this->assertDatabaseMissing('replies', [
+            'id' => $reply->id
+        ]);
+
         $this->assertDatabaseMissing('activities', [
             'subject_id' => $reply->id,
             'subject_type' => get_class($reply)
         ]);
+
         $this->assertDatabaseMissing('activities', [
             'subject_id' => $thread->id,
             'subject_type' => get_class($thread)

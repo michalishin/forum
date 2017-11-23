@@ -18,16 +18,17 @@ class Reply extends Model
     use Favoritable, RecordsActivity;
 
     public static function boot() {
-        self::created(function (self $reply) {
-            $reply
+        parent::boot();
+        static::created(function ($model) {
+            $model
                 ->load('thread.subscriptions.user')
                 ->thread
                 ->subscriptions
-                ->filter(function (ThreadSubscription $subscription) use ($reply) {
-                    return $subscription->user_id != $reply->user_id;
+                ->filter(function (ThreadSubscription $subscription) use ($model) {
+                    return $subscription->user_id != $model->user_id;
                 })
                 ->each
-                ->notify($reply);
+                ->notify($model);
         });
     }
 
