@@ -11,33 +11,36 @@ class NotificationsTest extends TestCase
 {
     use RefreshDatabase;
 
+    protected $thread;
+
+    public function setUp()
+    {
+        parent::setUp();
+
+        $this->signIn();
+
+        $this->thread = create(Thread::class)->subscribe();
+    }
+
     /** @test */
     public function a_subscribe_user_must_receive_a_notify_but_not_from_current_user() {
-        $this->signIn();
-        $thread = create(Thread::class)
-            ->subscribe();
-
         $this->assertCount(0, auth()->user()->notifications);
 
         create(Reply::class, [
             'user_id' => auth()->id(),
-            'thread_id' => $thread
+            'thread_id' => $this->thread
         ]);
 
         $this->assertCount(0, auth()->user()->fresh()->notifications);
 
-        create(Reply::class, ['thread_id' => $thread]);
+        create(Reply::class, ['thread_id' => $this->thread]);
 
         $this->assertCount(1, auth()->user()->fresh()->notifications);
     }
 
     /** @test */
     public function a_user_can_fetch_their_unread_notifications() {
-        $this->signIn();
-        $thread = create(Thread::class)
-            ->subscribe();
-
-        create(Reply::class, ['thread_id' => $thread]);
+        create(Reply::class, ['thread_id' => $this->thread]);
 
         $data = $this->getJson(route('user.notification.index', [
             auth()->user()->name
@@ -48,12 +51,8 @@ class NotificationsTest extends TestCase
 
     /** @test */
     public function a_user_can_clear_a_notification () {
-        $this->signIn();
-        $thread = create(Thread::class)
-            ->subscribe();
-
         create(Reply::class, [
-            'thread_id' => $thread
+            'thread_id' => $this->thread
         ]);
 
         $this->assertCount(1, auth()->user()->unreadNotifications);
