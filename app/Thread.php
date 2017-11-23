@@ -29,7 +29,6 @@ class Thread extends Model
     protected static function boot () {
         parent::boot();
         static::deleting(function (self $thread) {
-
             $thread->replies->each->delete();
         });
     }

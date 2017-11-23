@@ -2,12 +2,14 @@
 
 namespace App;
 
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 
 /**
  * @property int id
  * @property Activity activity
+ * @property Collection unreadNotifications
  */
 class User extends Authenticatable
 {

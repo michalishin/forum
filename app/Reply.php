@@ -23,12 +23,11 @@ class Reply extends Model
                 ->load('thread.subscriptions.user')
                 ->thread
                 ->subscriptions
-                ->filter(function ($subscription) use ($reply) {
-                    return $subscription->user_id !== $reply->user_id;
+                ->filter(function (ThreadSubscription $subscription) use ($reply) {
+                    return $subscription->user_id != $reply->user_id;
                 })
-                ->each(function (ThreadSubscription $subscription) use ($reply) {
-                    $subscription->user->notify(new ThreadWasUpdated($reply));
-                });
+                ->each
+                ->notify($reply);
         });
     }
 

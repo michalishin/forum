@@ -60,6 +60,14 @@ app('router')->post('/replies/{reply}/favorite', 'FavoriteController@store')
 app('router')->get('/profiles/{user}', 'UsersController@show')
     ->name('user.profile');
 
+app('router')
+    ->delete('/profiles/{user}/notifications/{notification}', 'UserNotificationsController@destroy')
+    ->name('user.notification.delete');
+
+app('router')
+    ->get('/profiles/{user}/notifications', 'UserNotificationsController@index')
+    ->name('user.notification.index');
+
 app('router')->auth();
 
 app('router')->get('home', 'HomeController@index')->name('home');

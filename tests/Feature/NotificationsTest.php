@@ -24,11 +24,45 @@ class NotificationsTest extends TestCase
             'thread_id' => $thread
         ]);
 
-
         $this->assertCount(0, auth()->user()->fresh()->notifications);
 
         create(Reply::class, ['thread_id' => $thread]);
 
         $this->assertCount(1, auth()->user()->fresh()->notifications);
+    }
+
+    /** @test */
+    public function a_user_can_fetch_their_unread_notifications() {
+        $this->signIn();
+        $thread = create(Thread::class)
+            ->subscribe();
+
+        create(Reply::class, ['thread_id' => $thread]);
+
+        $data = $this->getJson(route('user.notification.index', [
+            auth()->user()->name
+        ]))->json();
+
+        $this->assertCount(1, $data);
+    }
+
+    /** @test */
+    public function a_user_can_clear_a_notification () {
+        $this->signIn();
+        $thread = create(Thread::class)
+            ->subscribe();
+
+        create(Reply::class, [
+            'thread_id' => $thread
+        ]);
+
+        $this->assertCount(1, auth()->user()->unreadNotifications);
+
+        $this->delete(route('user.notification.delete', [
+            auth()->user()->name,
+            auth()->user()->unreadNotifications->first()
+        ]));
+
+        $this->assertCount(0, auth()->user()->fresh()->unreadNotifications);
     }
 }
