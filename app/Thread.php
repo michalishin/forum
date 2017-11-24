@@ -83,4 +83,10 @@ class Thread extends Model
             ->where(["user_id" => auth()->id()])
             ->exists();
     }
+
+    public function notifySubscribers (Reply $reply) {
+        $this->subscriptions
+            ->where('user_id', '!=', $reply->user_id)
+            ->each->notify($reply);
+    }
 }

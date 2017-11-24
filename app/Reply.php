@@ -2,6 +2,7 @@
 
 namespace App;
 
+use App\Events\ThreadHasNewReply;
 use App\Notifications\ThreadWasUpdated;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
@@ -19,16 +20,8 @@ class Reply extends Model
 
     public static function boot() {
         parent::boot();
-        static::created(function ($model) {
-            $model
-                ->load('thread.subscriptions.user')
-                ->thread
-                ->subscriptions
-                ->filter(function (ThreadSubscription $subscription) use ($model) {
-                    return $subscription->user_id != $model->user_id;
-                })
-                ->each
-                ->notify($model);
+        static::created(function ($reply) {
+            event(new ThreadHasNewReply($reply));
         });
     }
 

@@ -2,6 +2,8 @@
 
 namespace App\Providers;
 
+use App\Events\ThreadHasNewReply;
+use App\Listeners\NotifyThreadSubscribers;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
 
@@ -13,8 +15,8 @@ class EventServiceProvider extends ServiceProvider
      * @var array
      */
     protected $listen = [
-        'App\Events\Event' => [
-            'App\Listeners\EventListener',
+        ThreadHasNewReply::class => [
+            NotifyThreadSubscribers::class
         ],
     ];
 
@@ -26,7 +28,5 @@ class EventServiceProvider extends ServiceProvider
     public function boot()
     {
         parent::boot();
-
-        //
     }
 }
