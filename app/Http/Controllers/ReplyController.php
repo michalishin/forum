@@ -23,7 +23,7 @@ class ReplyController extends Controller
      */
     public function index(Thread $thread)
     {
-        return $thread->replies()->paginate(5);
+        return $thread->replies()->latest()->paginate(5);
     }
 
     /**

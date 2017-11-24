@@ -10,6 +10,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
  * @property int id
  * @property Activity activity
  * @property Collection unreadNotifications
+ * @property string name
  */
 class User extends Authenticatable
 {
