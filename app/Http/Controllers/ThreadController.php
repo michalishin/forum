@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Channel;
 use App\Filters\ThreadsFilters;
 use App\Thread;
+use Carbon\Carbon;
 use Illuminate\Foundation\Auth\User;
 use Illuminate\Http\Request;
 
@@ -75,7 +76,8 @@ class ThreadController extends Controller
      */
     public function show(Channel $channel, Thread $thread)
     {
-        $thread->append('is_subscribed_to');
+        $thread->visit()->append('is_subscribed_to');
+
         return view('threads.show', compact('thread'));
     }
 

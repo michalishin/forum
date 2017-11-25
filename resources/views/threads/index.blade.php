@@ -9,7 +9,15 @@
                         <div class="panel-heading">
                             <div class="level">
                                 <h4 class="flex">
-                                    <a href="{{$thread->getRouteUrl()}}">{{$thread->title}}</a>
+                                    <a href="{{$thread->getRouteUrl()}}">
+                                        @if ($thread->hasUpdatesFor(auth()->user()))
+                                            <strong>
+                                                {{$thread->title}}
+                                            </strong>
+                                        @else
+                                            {{$thread->title}}
+                                        @endif
+                                    </a>
                                 </h4>
 
                                 <a href="{{$thread->getRouteUrl()}}">

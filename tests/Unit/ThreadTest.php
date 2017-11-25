@@ -140,4 +140,24 @@ class ThreadTest extends TestCase
         $this->assertCount(0, $subscriptions);
 
     }
+
+    /** @test */
+    public function it_can_has_updates_for_user ()
+    {
+        /** @var Thread $thread */
+        $this->signIn();
+        $thread = create(Thread::class);
+
+        $this->assertTrue($thread->hasUpdatesFor());
+
+        $thread->visit();
+
+        $this->assertFalse($thread->hasUpdatesFor());
+
+//        create(Reply::class, [
+//            'thread_id' => $thread->id
+//        ]);
+//
+//        $this->assertTrue($thread->hasUpdatesFor());
+    }
 }

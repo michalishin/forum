@@ -3,6 +3,7 @@
 namespace App;
 
 use App\Filters\ThreadsFilters;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -16,6 +17,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @property Collection replies
  * @property Collection subscriptions
  * @property string title
+ * @property Carbon updated_at
  * @method static self create(array $data)
  * @package App
  */
@@ -57,7 +59,7 @@ class Thread extends Model
         return $filters->apply($query);
     }
 
-    public function subscribe($userId = null) {
+    public function subscribe($userId = null) : self {
         $subscribed = $this->subscriptions()
             ->where(["user_id" => $userId ?: auth()->id()])
             ->exists();
@@ -78,8 +80,7 @@ class Thread extends Model
         return $this->hasMany(ThreadSubscription::class);
     }
 
-    public function getIsSubscribedToAttribute() {
-
+    public function getIsSubscribedToAttribute() : bool {
         return $this->subscriptions()
             ->where(["user_id" => auth()->id()])
             ->exists();
@@ -89,5 +90,40 @@ class Thread extends Model
         $this->subscriptions
             ->where('user_id', '!=', $reply->user_id)
             ->each->notify($reply);
+    }
+
+    public function hasUpdatesFor (User $user = null) : bool {
+        $user = $user ?: auth()->user();
+
+        /** @var User $user */
+        $key = $this->getVisitedCacheKey($user);
+
+        return $this->updated_at > cache($key);
+    }
+
+    /**
+     * @param User|null $user
+     * @return $this
+     */
+    public function visit (User $user = null) : self {
+        $user = $user ?: auth()->user();
+        if (!$user) return $this;
+
+        /** @var User $user */
+        $key = $this->getVisitedCacheKey($user);
+
+        cache()->forever($key, Carbon::now());
+
+        return $this;
+    }
+
+    /**
+     * @param User $user
+     * @return string
+     */
+    protected function getVisitedCacheKey(User $user): string
+    {
+        $key = sprintf("users.%s.visits.%s", $user->id, $this->id);
+        return $key;
     }
 }
