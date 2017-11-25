@@ -62,9 +62,10 @@ class Thread extends Model
             ->where(["user_id" => $userId ?: auth()->id()])
             ->exists();
         if ($subscribed) return;
-        return $this->subscriptions()->create([
+        $this->subscriptions()->create([
            "user_id" => $userId ?: auth()->id()
         ]);
+        return $this;
     }
 
     public function unsubscribe($userId = null) {
