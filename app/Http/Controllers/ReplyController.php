@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Reply;
+use App\Spam;
 use App\Thread;
 use Illuminate\Auth\AuthManager;
 use Illuminate\Http\Request;
@@ -39,19 +40,20 @@ class ReplyController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  Thread  $thread
-     * @param  AuthManager $auth
+     * @param  Thread $thread
+     * @param  \Illuminate\Http\Request $request
      * @return \Illuminate\Http\Response
+     * @internal param AuthManager $auth
      */
-    public function store(Thread $thread, Request $request, AuthManager $auth)
+    public function store(Thread $thread, Request $request)
     {
         $request->validate([
             'body' => 'required'
         ]);
+
         $reply = $thread->replies()->create([
             'body' => $request->body,
-            'user_id' => $auth->id()
+            'user_id' => auth()->id()
         ]);
 
         if (request()->expectsJson()) {

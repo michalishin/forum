@@ -20,6 +20,10 @@ class Reply extends Model
 
     public static function boot() {
         parent::boot();
+        static::creating(function ($reply) {
+            $spam = new Spam();
+            $spam->detect($reply->body);
+        });
         static::created(function ($reply) {
             event(new ThreadHasNewReply($reply));
         });
