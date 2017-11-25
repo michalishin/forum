@@ -63,7 +63,7 @@ class Thread extends Model
         $subscribed = $this->subscriptions()
             ->where(["user_id" => $userId ?: auth()->id()])
             ->exists();
-        if ($subscribed) return;
+        if ($subscribed) return $this;
         $this->subscriptions()->create([
            "user_id" => $userId ?: auth()->id()
         ]);
@@ -94,7 +94,7 @@ class Thread extends Model
 
     public function hasUpdatesFor (User $user = null) : bool {
         $user = $user ?: auth()->user();
-
+        if (!$user) return true;
         /** @var User $user */
         $key = $this->getVisitedCacheKey($user);
 
