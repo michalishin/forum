@@ -50,9 +50,13 @@
             update () {
                 axios.put('/replies/' + this.data.id, {
                     body: this.body
+                }).catch(error => {
+                    flash(error.response.data, 'danger')
+                }).then(response => {
+                    flash('Updated!')
+                    this.editing = false
                 })
-                flash('Updated!')
-                this.editing = false
+
             },
             destroy () {
                 axios.delete('/replies/' + this.data.id)

@@ -20,7 +20,7 @@ class ReplyController extends Controller
      * Display a listing of the resource.
      *
      * @param Thread $thread
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Contracts\Pagination\LengthAwarePaginator
      */
     public function index(Thread $thread)
     {
@@ -28,21 +28,11 @@ class ReplyController extends Controller
     }
 
     /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
      * Store a newly created resource in storage.
      *
      * @param  Thread $thread
      * @param  \Illuminate\Http\Request $request
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Database\Eloquent\Model
      * @internal param AuthManager $auth
      */
     public function store(Thread $thread, Request $request)
@@ -51,40 +41,16 @@ class ReplyController extends Controller
             'body' => 'required'
         ]);
 
-        $reply = $thread->replies()->create([
-            'body' => $request->body,
-            'user_id' => auth()->id()
-        ]);
-
-        if (request()->expectsJson()) {
-            $reply->load('owner');
-            return $reply;
+        try {
+            $reply = $thread->replies()->create([
+                'body' => $request->body,
+                'user_id' => auth()->id()
+            ]);
+        } catch (\Exception $e) {
+            return response($e->getMessage(), 422);
         }
 
-        return back()
-            ->with('flash', 'Your reply has been left.');
-    }
-
-    /**
-     * Display the specified resource.
-     *
-     * @param  \App\Reply  $reply
-     * @return \Illuminate\Http\Response
-     */
-    public function show(Reply $reply)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Reply  $reply
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(Reply $reply)
-    {
-        //
+        return $reply->load('owner');
     }
 
     /**
@@ -92,7 +58,7 @@ class ReplyController extends Controller
      *
      * @param  \Illuminate\Http\Request  $request
      * @param  \App\Reply  $reply
-     * @return \Illuminate\Http\Response
+     * @return Reply
      */
     public function update(Request $request, Reply $reply)
     {
@@ -102,7 +68,13 @@ class ReplyController extends Controller
             'body' => 'required'
         ]);
 
-        $reply->update($request->all());
+        try {
+            $reply->update($request->all());
+        } catch (\Exception $e) {
+            return response($e->getMessage(), 422);
+        }
+
+        return $reply->load('owner');
     }
 
     /**
@@ -117,9 +89,6 @@ class ReplyController extends Controller
 
         $reply->delete();
 
-        if (request()->expectsJson()) {
-            return response('OK');
-        }
-        return back();
+        return response('OK');
     }
 }

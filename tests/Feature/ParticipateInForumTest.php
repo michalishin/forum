@@ -20,8 +20,8 @@ class ParticipateInForumTest extends TestCase
         $thread = create(Thread::class);
         $reply = make(Reply::class);
 
-        $this->post(route('replies.store', $thread), $reply->toArray())
-            ->assertRedirect();
+        $this->postJson(route('replies.store', $thread), $reply->toArray())
+            ->assertStatus(200);
 
         $this->assertDatabaseHas('replies', [
            'body' =>  $reply->body
@@ -72,7 +72,7 @@ class ParticipateInForumTest extends TestCase
            'user_id' => auth()->id()
         ]);
         $this->delete(route('replies.destroy', $reply))
-            ->assertStatus(302);
+            ->assertStatus(200);
         $this->assertDatabaseMissing('replies', [
             'id' => $reply->id
         ]);
