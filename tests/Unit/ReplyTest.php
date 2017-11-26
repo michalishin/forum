@@ -13,12 +13,14 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 class ReplyTest extends TestCase
 {
     use RefreshDatabase;
+
     /** @test  */
     public function it_has_an_owner()
     {
         $reply = create(Reply::class);
         $this->assertInstanceOf(User::class, $reply->owner);
     }
+
     /** @test */
     public function it_has_a_favorite () {
         $reply = create(Reply::class);
@@ -50,5 +52,19 @@ class ReplyTest extends TestCase
 
         $this->assertCount(3, $reply->mentionedUsers());
         $this->assertEquals($user->first()->id, $reply->mentionedUsers()->first()->id);
+    }
+
+    /** @test */
+    public function it_wraps_mentioned_users_in_the_body_within_anchor_tags () {
+        $user = create(User::class, []);
+
+        $reply = create(Reply::class,[
+            'body' => 'Hello @' . $user->name
+        ]);
+
+        $this->assertEquals(
+            $reply->body,
+            "Hello <a href=\"/profiles/{$user->name}\">@{$user->name}</a>"
+        );
     }
 }
