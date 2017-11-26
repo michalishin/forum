@@ -3,6 +3,7 @@
 namespace App\Listeners;
 
 use App\Events\ThreadHasNewReply;
+use App\Notifications\ThreadWasUpdated;
 
 class NotifyThreadSubscribers
 {
@@ -16,6 +17,10 @@ class NotifyThreadSubscribers
     {
         $event->reply
             ->thread
-            ->notifySubscribers( $event->reply);
+            ->subscriptions
+            ->where('user_id', '!=', $event->reply->user_id)
+            ->pluck('user')
+            ->each
+            ->notify(new ThreadWasUpdated($event->reply));
     }
 }

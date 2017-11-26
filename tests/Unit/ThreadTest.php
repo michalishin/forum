@@ -71,24 +71,6 @@ class ThreadTest extends TestCase
     }
 
     /** @test */
-    public function a_thread_notify_all_subscribers_when_a_reply_is_added () {
-        Notification::fake();
-
-        $this->signIn();
-
-        $thread = create(Thread::class)->subscribe();
-
-        $reply = make(Reply::class, [
-            'thread_id' => $thread
-        ]);
-
-        $thread->notifySubscribers($reply);
-
-        Notification::assertSentTo(auth()->user(), ThreadWasUpdated::class);
-
-    }
-
-    /** @test */
     public function a_thread_cant_be_subscribed_twice () {
         $thread = create(Thread::class);
 

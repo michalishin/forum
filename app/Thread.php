@@ -86,12 +86,6 @@ class Thread extends Model
             ->exists();
     }
 
-    public function notifySubscribers (Reply $reply) {
-        $this->subscriptions
-            ->where('user_id', '!=', $reply->user_id)
-            ->each->notify($reply);
-    }
-
     public function hasUpdatesFor (User $user = null) : bool {
         $user = $user ?: auth()->user();
         if (!$user) return true;

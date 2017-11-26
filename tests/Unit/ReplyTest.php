@@ -39,4 +39,16 @@ class ReplyTest extends TestCase
 
         $this->assertFalse($reply->wasJustPublished());
     }
+
+    /** @test */
+    public function it_can_detect_mentioned_users () {
+        $user = create(User::class, [], 3);
+
+        $reply = create(Reply::class,[
+            'body' => '@' . $user[0]->name . ' @' . $user[1]->name . ' @' . $user[2]->name
+        ]);
+
+        $this->assertCount(3, $reply->mentionedUsers());
+        $this->assertEquals($user->first()->id, $reply->mentionedUsers()->first()->id);
+    }
 }

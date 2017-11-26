@@ -17,11 +17,9 @@ class NotifyMentionUsers
      */
     public function handle(ThreadHasNewReply $event)
     {
-        $matches = [];
-        preg_match_all('/@([^\s\.]+)/',$event->reply->body, $matches);
-        $names = $matches[1];
-        User::whereIn('name',$names)
-            ->get()
+        $event->reply
+            ->mentionedUsers()
+            ->where('user_id', '!=', $event->reply->user_id)
             ->each
             ->notify(new YouWereMentioned($event->reply));
     }
