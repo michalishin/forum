@@ -41,10 +41,16 @@ class CreateReplyRequest extends FormRequest
         );
     }
 
-    public function persist (Thread $thread) {
-        return $thread->replies()->create([
+    /**
+     * @param Thread $thread
+     * @return Reply
+     */
+    public function persist (Thread $thread) : Reply {
+        $reply = $thread->replies()->create([
             'body' => $this->body,
             'user_id' => auth()->id()
-        ])->load('owner');
+        ]);
+        /** @var Reply $reply */
+        return $reply;
     }
 }

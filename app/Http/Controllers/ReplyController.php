@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\CreateReplyRequest;
+use App\Http\Requests\DeleteReplyRequest;
+use App\Http\Requests\UpdateReplyRequest;
 use App\Reply;
 use App\Rules\SpamRule;
 use App\Thread;
@@ -38,44 +40,31 @@ class ReplyController extends Controller
      */
     public function store(Thread $thread, CreateReplyRequest $request)
     {
-        return $request->persist($thread);
+        return $request->persist($thread)->load('owner');
     }
 
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Reply  $reply
+     * @param UpdateReplyRequest|Request $request
+     * @param  \App\Reply $reply
      * @return Reply
      */
-    public function update(Request $request, Reply $reply)
+    public function update(UpdateReplyRequest $request, Reply $reply)
     {
-        $this->authorize('update', $reply);
-
-        $request->validate([
-            'body' => 'required|spam_free'
-        ]);
-
-        try {
-            $reply->update($request->all());
-        } catch (\Exception $e) {
-            return response($e->getMessage(), 422);
-        }
-
-        return $reply->load('owner');
+        return $request->persist($reply)->load('owner');
     }
 
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Reply  $reply
+     * @param DeleteReplyRequest $request
+     * @param  \App\Reply $reply
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Reply $reply)
+    public function destroy(DeleteReplyRequest $request,Reply $reply)
     {
-        $this->authorize('delete', $reply);
-
-        $reply->delete();
+        $request->persist($reply);
 
         return response('OK');
     }

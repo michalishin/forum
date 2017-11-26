@@ -12,6 +12,9 @@ use Illuminate\Http\Request;
 class ThreadController extends Controller
 {
 
+    /**
+     * ThreadController constructor.
+     */
     public function __construct()
     {
         $this->middleware('auth')->except(['index', 'show']);
@@ -57,12 +60,10 @@ class ThreadController extends Controller
             'body' => 'required|spam_free',
             'channel_id' => 'required|exists:channels,id'
         ]);
-        $thread = Thread::create([
-            'title' => $request->title,
-            'body' => $request->body,
-            'channel_id' => $request->channel_id,
-            'user_id' => auth()->id()
-        ]);
+        $thread = Thread::create(array_merge(
+            $request->all(),
+            ['user_id' => auth()->id()]
+        ));
         return redirect($thread->getRouteUrl())
             ->with('flash', 'Your thread has been published!');
     }
