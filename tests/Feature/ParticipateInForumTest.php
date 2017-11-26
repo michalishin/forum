@@ -124,13 +124,13 @@ class ParticipateInForumTest extends TestCase
 
     /** @test */
     public function a_reply_that_contains_spam_may_not_be_created () {
+        $this->enableExceptionHandling()->signIn();
         $thread = create(Thread::class);
         $reply =  make(Reply::class, [
             'body' => 'Yahoo Customer Support'
         ]);
 
-        $this->expectException(\Exception::class);
-
-        $this->post(route('replies.store', $thread), $reply->toArray());
+        $this->postJson(route('replies.store', $thread), $reply->toArray())
+            ->assertStatus(422);
     }
 }

@@ -3,8 +3,6 @@
 namespace App;
 
 use App\Events\ThreadHasNewReply;
-use App\Inspections\Spam;
-use App\Notifications\ThreadWasUpdated;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 
@@ -21,10 +19,6 @@ class Reply extends Model
 
     public static function boot() {
         parent::boot();
-        static::creating(function ($reply) {
-            $spam = new Spam();
-            $spam->detect($reply->body);
-        });
         static::created(function ($reply) {
             event(new ThreadHasNewReply($reply));
         });

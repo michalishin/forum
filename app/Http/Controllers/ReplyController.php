@@ -3,9 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Reply;
-use App\Spam;
+use App\Rules\SpamRule;
 use App\Thread;
-use Illuminate\Auth\AuthManager;
 use Illuminate\Http\Request;
 
 class ReplyController extends Controller
@@ -38,17 +37,13 @@ class ReplyController extends Controller
     public function store(Thread $thread, Request $request)
     {
         $request->validate([
-            'body' => 'required'
+            'body' => 'required|spam_free'
         ]);
 
-        try {
-            $reply = $thread->replies()->create([
-                'body' => $request->body,
-                'user_id' => auth()->id()
-            ]);
-        } catch (\Exception $e) {
-            return response($e->getMessage(), 422);
-        }
+        $reply = $thread->replies()->create([
+            'body' => $request->body,
+            'user_id' => auth()->id()
+        ]);
 
         return $reply->load('owner');
     }
@@ -65,7 +60,7 @@ class ReplyController extends Controller
         $this->authorize('update', $reply);
 
         $request->validate([
-            'body' => 'required'
+            'body' => 'required|spam_free'
         ]);
 
         try {

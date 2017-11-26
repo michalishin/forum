@@ -51,7 +51,7 @@
                 axios.put('/replies/' + this.data.id, {
                     body: this.body
                 }).catch(error => {
-                    flash(error.response.data, 'danger')
+                    flash(error.response.data.message, 'danger')
                 }).then(response => {
                     flash('Updated!')
                     this.editing = false

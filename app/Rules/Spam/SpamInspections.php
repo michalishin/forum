@@ -1,12 +1,9 @@
 <?php
 
 
-namespace App\Inspections;
+namespace App\Rules\Spam;
 
-
-use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
-
-class Spam
+class SpamInspections
 {
     protected $detectors = [
         DetectHoldDown::class,
@@ -22,11 +19,10 @@ class Spam
     {
         foreach ($this->detectors as $detector) {
             $instance = new $detector;
-            if (! ($instance instanceof SpamDetectorContract))
-                throw new BadRequestHttpException('Invalid spam detector');
             if ($instance->detect($body)) {
-                throw new \Exception('Spam detected');
+                return true;
             }
+
         }
         return false;
     }

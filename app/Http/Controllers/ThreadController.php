@@ -53,8 +53,8 @@ class ThreadController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'title' => 'required|max:255',
-            'body' => 'required',
+            'title' => 'required|max:255|spam_free',
+            'body' => 'required|spam_free',
             'channel_id' => 'required|exists:channels,id'
         ]);
         $thread = Thread::create([
@@ -79,29 +79,6 @@ class ThreadController extends Controller
         $thread->visit()->append('is_subscribed_to');
 
         return view('threads.show', compact('thread'));
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Thread  $thread
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(Thread $thread)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Thread  $thread
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, Thread $thread)
-    {
-        //
     }
 
     /**

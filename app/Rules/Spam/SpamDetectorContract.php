@@ -6,7 +6,7 @@
  * Time: 19:31
  */
 
-namespace App\Inspections;
+namespace App\Rules\Spam;
 
 
 interface SpamDetectorContract

@@ -3,11 +3,9 @@
 namespace App;
 
 use App\Filters\ThreadsFilters;
-use App\Inspections\Spam;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\SoftDeletes;
 
 /**
  * Class Thread
@@ -33,9 +31,6 @@ class Thread extends Model
 
     protected static function boot () {
         parent::boot();
-        static::creating(function (self $thread) {
-            (new Spam())->detect($thread->body);
-        });
         static::deleting(function (self $thread) {
             $thread->replies->each->delete();
         });

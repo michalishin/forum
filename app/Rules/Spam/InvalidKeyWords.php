@@ -1,7 +1,7 @@
 <?php
 
 
-namespace App\Inspections;
+namespace App\Rules\Spam;
 
 
 class InvalidKeyWords implements SpamDetectorContract
