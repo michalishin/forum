@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\CreateReplyRequest;
 use App\Reply;
 use App\Rules\SpamRule;
 use App\Thread;
@@ -30,28 +31,14 @@ class ReplyController extends Controller
      * Store a newly created resource in storage.
      *
      * @param  Thread $thread
-     * @param  \Illuminate\Http\Request $request
+     * @param CreateReplyRequest|Request $request
      * @return \Illuminate\Database\Eloquent\Model
+     * @internal param CreateReplyRequest $createPostForm
      * @internal param AuthManager $auth
      */
-    public function store(Thread $thread, Request $request)
+    public function store(Thread $thread, CreateReplyRequest $request)
     {
-        if(auth()->user()->lastReply && auth()->user()->lastReply->wasJustPublished()) {
-            return response([
-                'message' => 'You are posting too frequently. Please, take a break. :)'
-            ],429);
-        }
-
-        $request->validate([
-            'body' => 'required|spam_free'
-        ]);
-
-        $reply = $thread->replies()->create([
-            'body' => $request->body,
-            'user_id' => auth()->id()
-        ]);
-
-        return $reply->load('owner');
+        return $request->persist($thread);
     }
 
     /**

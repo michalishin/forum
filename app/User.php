@@ -11,6 +11,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
  * @property Activity activity
  * @property Collection unreadNotifications
  * @property string name
+ * @property Reply lastReply
  */
 class User extends Authenticatable
 {

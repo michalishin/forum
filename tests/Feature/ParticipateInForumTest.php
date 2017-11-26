@@ -136,14 +136,12 @@ class ParticipateInForumTest extends TestCase
 
     /** @test */
     public function user_cant_save_one_reply_per_minute () {
-        $user = $this->signIn();
+        $user = $this->enableExceptionHandling()->signIn();
         $thread = create(Thread::class);
         $reply =  make(Reply::class);
 
         $this->postJson(route('replies.store', $thread), $reply->toArray())
             ->assertStatus(200);
-
-        $this->signIn($user->fresh());
 
         $this->postJson(route('replies.store', $thread), $reply->toArray())
             ->assertStatus(429);
