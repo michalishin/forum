@@ -3,6 +3,7 @@
 namespace App;
 
 use App\Events\ThreadHasNewReply;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 
@@ -12,6 +13,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property integer id
  * @property integer user_id
  * @property User owner
+ * @property Carbon created_at
  */
 class Reply extends Model
 {
@@ -40,4 +42,7 @@ class Reply extends Model
         return $this->thread->getRouteUrl() . '#reply-' . $this->id;
     }
 
+    public function wasJustPublished () {
+        return $this->created_at->gt(Carbon::now()->subMinute());
+    }
 }

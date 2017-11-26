@@ -36,6 +36,12 @@ class ReplyController extends Controller
      */
     public function store(Thread $thread, Request $request)
     {
+        if(auth()->user()->lastReply && auth()->user()->lastReply->wasJustPublished()) {
+            return response([
+                'message' => 'You are posting too frequently. Please, take a break. :)'
+            ],429);
+        }
+
         $request->validate([
             'body' => 'required|spam_free'
         ]);

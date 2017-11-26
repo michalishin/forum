@@ -43,5 +43,7 @@ class User extends Authenticatable
         return $this->hasMany(Activity::class)->with('subject');
     }
 
-
+    public function lastReply () {
+        return $this->hasOne(Reply::class)->latest();
+    }
 }
