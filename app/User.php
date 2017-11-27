@@ -12,6 +12,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
  * @property Collection unreadNotifications
  * @property string name
  * @property Reply lastReply
+ * @property null|string avatar_path
  */
 class User extends Authenticatable
 {

@@ -114,7 +114,7 @@ class ReadThreadsTest extends TestCase
         $user = create(User::class);
         $thread = create(Thread::class);
 
-        $this->enableExceptionHandling()
+        $this->withExceptionHandling()
             ->delete(route('threads.destroy', $thread))
             ->assertRedirect('login');
         $this->assertDatabaseHas('threads', $thread->toArray());
@@ -161,7 +161,7 @@ class ReadThreadsTest extends TestCase
         $thread = create(Thread::class);
 
         $this->signIn($user);
-        $this->enableExceptionHandling()
+        $this->withExceptionHandling()
             ->delete(route('threads.destroy', $thread))
             ->assertStatus(403);
         $this->assertDatabaseHas('threads', $thread->only(['id']));

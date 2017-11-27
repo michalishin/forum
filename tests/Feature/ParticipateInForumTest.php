@@ -34,7 +34,7 @@ class ParticipateInForumTest extends TestCase
     /** @test */
     public function an_unauthenticated_user_may_not_participate_in_forum_threads() {
         $thread = create(Thread::class);
-        $this->enableExceptionHandling()
+        $this->withExceptionHandling()
             ->post(route('replies.store', $thread))
             ->assertRedirect(route('login'));
     }
@@ -45,7 +45,7 @@ class ParticipateInForumTest extends TestCase
     }
 
     public function publishThread($data = []) {
-        $this->enableExceptionHandling()->signIn();
+        $this->withExceptionHandling()->signIn();
         $thread = create(Thread::class);
         $reply = make(Reply::class, $data);
         return $this->post(route('replies.store', $thread), $reply->toArray());
@@ -54,7 +54,7 @@ class ParticipateInForumTest extends TestCase
     /** @test */
     public function unatorized_users_cannot_delete_replies () {
         $reply =  create('App\Reply');
-        $this->enableExceptionHandling()
+        $this->withExceptionHandling()
             ->delete(route('replies.destroy', $reply))
             ->assertRedirect(route('login'));
 
@@ -81,7 +81,7 @@ class ParticipateInForumTest extends TestCase
     /** @test */
     public function unatorized_users_cannot_update_replies () {
         $reply =  create('App\Reply');
-        $this->enableExceptionHandling()
+        $this->withExceptionHandling()
             ->put(route('replies.update', $reply))
             ->assertRedirect(route('login'));
 
@@ -112,7 +112,7 @@ class ParticipateInForumTest extends TestCase
     public function a_thread_update_validation_test () {
         $this->signIn();
 
-        $this->enableExceptionHandling()->signIn();
+        $this->withExceptionHandling()->signIn();
         $reply = create(Reply::class, [
             'user_id' => auth()->id()
         ]);
@@ -124,7 +124,7 @@ class ParticipateInForumTest extends TestCase
 
     /** @test */
     public function a_reply_that_contains_spam_may_not_be_created () {
-        $this->enableExceptionHandling()->signIn();
+        $this->withExceptionHandling()->signIn();
         $thread = create(Thread::class);
         $reply =  make(Reply::class, [
             'body' => 'Yahoo Customer Support'
@@ -136,7 +136,7 @@ class ParticipateInForumTest extends TestCase
 
     /** @test */
     public function user_cant_save_one_reply_per_minute () {
-        $user = $this->enableExceptionHandling()->signIn();
+        $user = $this->withExceptionHandling()->signIn();
         $thread = create(Thread::class);
         $reply =  make(Reply::class);
 

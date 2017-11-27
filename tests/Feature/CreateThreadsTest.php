@@ -26,7 +26,7 @@ class CreateThreadsTest extends TestCase
    }
     /** @test */
    public function guest_may_not_create_threads () {
-       $this->enableExceptionHandling();
+       $this->withExceptionHandling();
 
        $this->get(route('threads.create'))
            ->assertRedirect(route('login'));
@@ -58,7 +58,7 @@ class CreateThreadsTest extends TestCase
    }
 
    public function publishThread($data = []) {
-       $this->enableExceptionHandling()->signIn();
+       $this->withExceptionHandling()->signIn();
        $thread = make(Thread::class,$data);
        return $this->post(route('threads.store'), $thread->toArray());
    }
