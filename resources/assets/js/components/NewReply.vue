@@ -3,6 +3,7 @@
         <div v-if="signedIn">
             <div class="form-group">
                         <textarea name="body"
+                                  ref="body"
                                   id="reply-body"
                                   placeholder="Have something to say?"
                                   rows="5"
@@ -21,6 +22,9 @@
     </div>
 </template>
 <script>
+    import 'jquery.caret'
+    import 'at.js'
+
     export default {
         props: ['endpoint'],
         data () {
@@ -33,6 +37,21 @@
             signedIn () {
                 return window.App.signedIn
             }
+        },
+
+        mounted () {
+            $(this.$refs.body).atwho({
+                at: '@',
+                delay: 750,
+                callbacks: {
+                    remoteFilter (query, callback) {
+                        axios.get("/api/users", {params: {name: query}})
+                            .then(({data}) => {
+                                callback(data)
+                            })
+                    }
+                }
+            })
         },
 
         methods: {
