@@ -8,18 +8,24 @@
                     <div class="panel panel-default">
                         <div class="panel-heading">
                             <div class="level">
-                                <h4 class="flex">
-                                    <a href="{{$thread->getRouteUrl()}}">
-                                        @if ($thread->hasUpdatesFor(auth()->user()))
-                                            <strong>
+                                <div class="flex">
+                                    <h4>
+                                        <a href="{{$thread->getRouteUrl()}}">
+                                            @if ($thread->hasUpdatesFor(auth()->user()))
+                                                <strong>
+                                                    {{$thread->title}}
+                                                </strong>
+                                            @else
                                                 {{$thread->title}}
-                                            </strong>
-                                        @else
-                                            {{$thread->title}}
-                                        @endif
-                                    </a>
-                                </h4>
-
+                                            @endif
+                                        </a>
+                                    </h4>
+                                    <h5>Posted By:
+                                        <a href="{{ route('user.profile', $thread->creator->name) }}">
+                                            {{ $thread->creator->name }}
+                                        </a>
+                                    </h5>
+                                </div>
                                 <a href="{{$thread->getRouteUrl()}}">
                                     {{$thread->replies_count}} {{str_plural('reply',$thread->replies_count)}}
                                 </a>
