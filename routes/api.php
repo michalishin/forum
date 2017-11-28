@@ -16,4 +16,7 @@ use Illuminate\Http\Request;
 app('router')->get('/users', 'Api\UsersController@index')
     ->name('username.search');
 
+app('router')->post('/users/{user}/avatar', 'Api\UsersAvatarController@store')
+    ->name('user.avatar.store');
+
 

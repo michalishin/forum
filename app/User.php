@@ -29,7 +29,7 @@ class User extends Authenticatable
      * @var array
      */
     protected $fillable = [
-        'name', 'email', 'password',
+        'name', 'email', 'password', 'avatar_path'
     ];
 
     /**
@@ -38,8 +38,10 @@ class User extends Authenticatable
      * @var array
      */
     protected $hidden = [
-        'password', 'remember_token',
+        'password', 'remember_token', 'avatar_path'
     ];
+
+    protected $appends = ['avatar'];
 
     public function activities () {
         return $this->hasMany(Activity::class)->with('subject');
@@ -49,7 +51,7 @@ class User extends Authenticatable
         return $this->hasOne(Reply::class)->latest();
     }
 
-    public function avatar () {
+    public function getAvatarAttribute () {
         return asset('storage/' . ($this->avatar_path ?: 'avatars/default.png')) ;
     }
 }

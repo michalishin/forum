@@ -20,6 +20,5 @@ class UsersAvatarController extends Controller
         ]);
         $user->avatar_path = $request->file('avatar')->store('avatars', 'public');
         $user->save();
-        return back();
     }
 }
