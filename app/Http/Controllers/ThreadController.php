@@ -8,6 +8,7 @@ use App\Thread;
 use Carbon\Carbon;
 use Illuminate\Foundation\Auth\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Redis;
 
 class ThreadController extends Controller
 {
@@ -34,7 +35,10 @@ class ThreadController extends Controller
         if (request()->wantsJson()) {
             return $threads;
         }
-        return view('threads.index' ,compact('threads'));
+
+        $trends = array_map('json_decode', Redis::zrevrange('trending_threads', 0, 4));
+
+        return view('threads.index' ,compact('threads', 'trends'));
     }
 
     /**
@@ -78,6 +82,12 @@ class ThreadController extends Controller
     public function show(Channel $channel, Thread $thread)
     {
         $thread->visit()->append('is_subscribed_to');
+
+        Redis::zincrby('trending_threads', 1, json_encode([
+            'id' => $thread->id,
+            'title' => $thread->title,
+            'path' => $thread->getRouteUrl()
+        ]));
 
         return view('threads.show', compact('thread'));
     }
