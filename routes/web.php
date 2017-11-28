@@ -71,3 +71,6 @@ app('router')
 app('router')->auth();
 
 app('router')->get('home', 'HomeController@index')->name('home');
+
+app('router')->post('/api/users/{user}/avatar', 'Api\UsersAvatarController@store')
+    ->name('user.avatar.store');

@@ -10,11 +10,13 @@
                     <div class="panel panel-default">
                         <div class="panel-heading">
                             <div class="level">
-                            <span class="flex">
-                                <a href="{{route('user.profile', $thread->creator)}}"> {{$thread->creator->name}} </a>
-                                posted:
-                                {{$thread->title}}
-                            </span>
+                                <img src="{{ $thread->creator->avatar() }}" width="25" height="25" class="mr-1">
+
+                                <span class="flex">
+                                    <a href="{{route('user.profile', $thread->creator)}}"> {{$thread->creator->name}} </a>
+                                    posted:
+                                    {{$thread->title}}
+                                </span>
 
                                 @can('update', $thread)
                                     <form action="{{route('threads.destroy', $thread)}}" method="POST">

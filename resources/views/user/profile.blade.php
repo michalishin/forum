@@ -6,6 +6,16 @@
             <div class="col-md-8 col-md-offset-2">
                 <div class="page-header">
                     <h1>{{$user->name}}</h1>
+                    @can('update', $user)
+                        <form method="POST"
+                              action="{{ route('user.avatar.store', $user) }}"
+                              enctype="multipart/form-data">
+                            {{ csrf_field() }}
+                            <input type="file" name="avatar">
+                            <button class="btn btn-primary">Add avatar</button>
+                        </form>
+                    @endcan
+                    <img src="{{ $user->avatar() }}" width="50" height="50">
                 </div>
 
                 @foreach($activities as $date => $activity)
