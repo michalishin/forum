@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Channel;
 use App\Filters\ThreadsFilters;
 use App\Thread;
+use App\Trending;
 use Carbon\Carbon;
 use Illuminate\Foundation\Auth\User;
 use Illuminate\Http\Request;
@@ -26,9 +27,10 @@ class ThreadController extends Controller
      *
      * @param Channel $channel
      * @param ThreadsFilters $filters
+     * @param Trending $trending
      * @return \Illuminate\Http\Response
      */
-    public function index(Channel $channel, ThreadsFilters $filters)
+    public function index(Channel $channel, ThreadsFilters $filters, Trending $trending)
     {
         $threads = $this->getThreads($channel, $filters);
 
@@ -36,7 +38,9 @@ class ThreadController extends Controller
             return $threads;
         }
 
-        $trends = array_map('json_decode', Redis::zrevrange('trending_threads', 0, 4));
+
+
+        $trends = $trending->get();
 
         return view('threads.index' ,compact('threads', 'trends'));
     }
@@ -76,18 +80,15 @@ class ThreadController extends Controller
      * Display the specified resource.
      *
      * @param  \App\Channel $channel
-     * @param  \App\Thread  $thread
+     * @param  \App\Thread $thread
+     * @param Trending $trending
      * @return \Illuminate\Http\Response
      */
-    public function show(Channel $channel, Thread $thread)
+    public function show(Channel $channel, Thread $thread, Trending $trending)
     {
         $thread->visit()->append('is_subscribed_to');
 
-        Redis::zincrby('trending_threads', 1, json_encode([
-            'id' => $thread->id,
-            'title' => $thread->title,
-            'path' => $thread->getRouteUrl()
-        ]));
+        $trending->push($thread);
 
         return view('threads.show', compact('thread'));
     }
@@ -121,7 +122,7 @@ class ThreadController extends Controller
             $threads->where('channel_id', $channel->id);
         }
 
-        $threads = $threads->get();
+        $threads = $threads->paginate(5);
         return $threads;
     }
 }

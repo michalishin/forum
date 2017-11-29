@@ -38,24 +38,29 @@
                 @empty
                     <p>There are no relevant results in this time</p>
                 @endforelse
+                <div class="text-center">
+                    {{$threads->links()}}
+                </div>
             </div>
             <div class="col-md-4">
-                <div class="panel panel-default">
-                    <div class="panel-heading">
-                        Trending Threads
+                @if (count($trends))
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            Trending Threads
+                        </div>
+                        <div class="panel-body">
+                            <ul class="list-group">
+                                @foreach($trends as $trend)
+                                    <li class="list-group-item">
+                                        <a href="{{ $trend->path }}">
+                                            {{ $trend->title }}
+                                        </a>
+                                    </li>
+                                @endforeach
+                            </ul>
+                        </div>
                     </div>
-                    <div class="panel-body">
-                        <ul class="list-group">
-                            @foreach($trends as $trend)
-                                <li class="list-group-item">
-                                    <a href="{{ $trend->path }}">
-                                        {{ $trend->title }}
-                                    </a>
-                                </li>
-                            @endforeach
-                        </ul>
-                    </div>
-                </div>
+                @endif
             </div>
         </div>
     </div>

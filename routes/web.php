@@ -11,9 +11,7 @@
 |
 */
 
-app('router')->get('/', function () {
-    return view('welcome');
-});
+app('router')->get('/', 'ThreadController@index');
 
 
 app('router')->get('/threads/{thread}/replies', 'ReplyController@index')
