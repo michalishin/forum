@@ -91,9 +91,9 @@ class ReadThreadsTest extends TestCase
                 'thread_id' => create(Thread::class)
             ], $count);
         }
-        $response = $this->getJson(route('threads.index') . '?popularity=1')->json();
+        $response = $this->getJson(route('threads.index') . '?popularity=1')->json()['data'];
         $this->assertEquals([3,2,0], array_column($response,'replies_count'));
-        $response = $this->getJson(route('threads.index') . '?popularity=0')->json();
+        $response = $this->getJson(route('threads.index') . '?popularity=0')->json()['data'];
         $this->assertEquals([0,2,3], array_column($response,'replies_count'));
     }
 
