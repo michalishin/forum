@@ -66,6 +66,10 @@ app('router')
     ->get('/profiles/{user}/notifications', 'UserNotificationsController@index')
     ->name('user.notification.index');
 
+app('router')->post('/api/users/{user}/avatar', 'Api\UsersAvatarController@store')
+    ->name('user.avatar.store');
+
+
 app('router')->auth();
 
 app('router')->get('home', 'HomeController@index')->name('home');

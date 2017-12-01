@@ -10,9 +10,14 @@ class UsersAvatarController extends Controller
 {
     public function __construct()
     {
-        $this->middleware('auth');
+         $this->middleware('auth');
     }
 
+    /**
+     * @param User $user
+     * @param Request $request
+     * @throws \Illuminate\Auth\Access\AuthorizationException
+     */
     public function store (User $user, Request $request) {
         $this->authorize($user);
         $request->validate([
