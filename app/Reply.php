@@ -14,6 +14,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property integer user_id
  * @property User owner
  * @property Carbon created_at
+ * @property Carbon updated_at
  */
 class Reply extends Model
 {
@@ -21,8 +22,12 @@ class Reply extends Model
 
     public static function boot() {
         parent::boot();
-        static::created(function ($reply) {
+        static::created(function (self $reply) {
             event(new ThreadHasNewReply($reply));
+
+            $reply->thread->update([
+                'updated_at' => Carbon::now()
+            ]);
         });
     }
 

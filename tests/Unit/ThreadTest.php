@@ -123,11 +123,15 @@ class ThreadTest extends TestCase
 
     }
 
-    /** @test */
+    /**
+     * @test
+     * @throws \Exception
+     */
     public function it_can_has_updates_for_user ()
     {
         /** @var Thread $thread */
         $this->signIn();
+
         $thread = create(Thread::class);
 
         $this->assertTrue($thread->hasUpdatesFor());
@@ -135,11 +139,11 @@ class ThreadTest extends TestCase
         $thread->visit();
 
         $this->assertFalse($thread->hasUpdatesFor());
+        sleep(1);
+        create(Reply::class, [
+            'thread_id' => $thread->id
+        ]);
 
-//        create(Reply::class, [
-//            'thread_id' => $thread->id
-//        ]);
-//
-//        $this->assertTrue($thread->hasUpdatesFor());
+        $this->assertTrue($thread->fresh()->hasUpdatesFor());
     }
 }

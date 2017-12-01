@@ -25,7 +25,7 @@ class Thread extends Model
 {
     use RecordsActivity;
 
-    protected $fillable = ['user_id', 'title', 'body', 'channel_id'];
+    protected $fillable = ['user_id', 'title', 'body', 'channel_id', 'updated_at'];
     protected $withCount = ['replies'];
     protected $with = ['creator', 'channel'];
 
@@ -86,6 +86,11 @@ class Thread extends Model
             ->exists();
     }
 
+    /**
+     * @param User|null $user
+     * @return bool
+     * @throws \Exception
+     */
     public function hasUpdatesFor (User $user = null) : bool {
         $user = $user ?: auth()->user();
         if (!$user) return true;
@@ -98,6 +103,7 @@ class Thread extends Model
     /**
      * @param User|null $user
      * @return $this
+     * @throws \Exception
      */
     public function visit (User $user = null) : self {
         $user = $user ?: auth()->user();
