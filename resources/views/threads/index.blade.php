@@ -34,6 +34,9 @@
                         <article class="panel-body">
                             {{$thread->body}}
                         </article>
+                        <div class="panel-footer">
+                            {{$thread->visits_count}} {{str_plural('Visit', $thread->visits_count)}}
+                        </div>
                     </div>
                 @empty
                     <p>There are no relevant results in this time</p>

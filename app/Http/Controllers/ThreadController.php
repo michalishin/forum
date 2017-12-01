@@ -83,10 +83,13 @@ class ThreadController extends Controller
      * @param  \App\Thread $thread
      * @param Trending $trending
      * @return \Illuminate\Http\Response
+     * @throws \Exception
      */
     public function show(Channel $channel, Thread $thread, Trending $trending)
     {
         $thread->visit()->append('is_subscribed_to');
+
+        $thread->recordVisit();
 
         $trending->push($thread);
 
@@ -96,8 +99,10 @@ class ThreadController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Thread  $thread
+     * @param  \App\Thread $thread
      * @return \Illuminate\Http\Response
+     * @throws \Exception
+     * @throws \Illuminate\Auth\Access\AuthorizationException
      */
     public function destroy(Thread $thread)
     {
