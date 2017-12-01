@@ -136,7 +136,7 @@ class ThreadTest extends TestCase
 
         $this->assertTrue($thread->hasUpdatesFor());
 
-        $thread->visit();
+        $thread->read();
 
         $this->assertFalse($thread->hasUpdatesFor());
         sleep(1);
@@ -151,11 +151,11 @@ class ThreadTest extends TestCase
     public function it_has_visits_count_attribute () {
         $thread = create(Thread::class);
 
-        $thread->resetVisits();
+        $thread->visits()->reset();
 
         $this->assertSame($thread->visits_count, 0);
 
-        $thread->recordVisit();
+        $thread->visits()->record();
 
         $this->assertSame($thread->visits_count, 1);
     }

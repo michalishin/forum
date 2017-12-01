@@ -87,9 +87,10 @@ class ThreadController extends Controller
      */
     public function show(Channel $channel, Thread $thread, Trending $trending)
     {
-        $thread->visit()->append('is_subscribed_to');
-
-        $thread->recordVisit();
+        $thread->read()
+            ->append('is_subscribed_to')
+            ->visits()
+            ->record();
 
         $trending->push($thread);
 

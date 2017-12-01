@@ -6,7 +6,6 @@ use App\Filters\ThreadsFilters;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Facades\Redis;
 
 /**
  * Class Thread
@@ -24,11 +23,22 @@ use Illuminate\Support\Facades\Redis;
  */
 class Thread extends Model
 {
-    use RecordsActivity, RecordVisits;
+    use RecordsActivity;
 
     protected $fillable = ['user_id', 'title', 'body', 'channel_id', 'updated_at'];
     protected $withCount = ['replies'];
     protected $with = ['creator', 'channel'];
+
+    /**
+     * @var Visits
+     */
+    protected $visits;
+
+    public function __construct(array $attributes = [])
+    {
+        parent::__construct($attributes);
+        $this->visits = new Visits($this);
+    }
 
     protected static function boot () {
         parent::boot();
@@ -96,7 +106,7 @@ class Thread extends Model
         $user = $user ?: auth()->user();
         if (!$user) return true;
         /** @var User $user */
-        $key = $this->getVisitedCacheKey($user);
+        $key = $this->getReadCacheKey($user);
 
         return $this->updated_at > cache($key);
     }
@@ -106,12 +116,12 @@ class Thread extends Model
      * @return $this
      * @throws \Exception
      */
-    public function visit (User $user = null) : self {
+    public function read (User $user = null) : self {
         $user = $user ?: auth()->user();
         if (!$user) return $this;
 
         /** @var User $user */
-        $key = $this->getVisitedCacheKey($user);
+        $key = $this->getReadCacheKey($user);
 
         cache()->forever($key, Carbon::now());
 
@@ -122,11 +132,18 @@ class Thread extends Model
      * @param User $user
      * @return string
      */
-    protected function getVisitedCacheKey(User $user): string
+    protected function getReadCacheKey(User $user): string
     {
         $key = sprintf("users.%s.visits.%s", $user->id, $this->id);
         return $key;
     }
 
+    public function visits() {
+        return $this->visits;
+    }
 
+    public function getVisitsCountAttribute(): int
+    {
+        return $this->visits->count();
+    }
 }
