@@ -18,6 +18,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property string title
  * @property Carbon updated_at
  * @property string body
+ * @property string slug
  * @method static self create(array $data)
  * @package App
  */
@@ -25,9 +26,20 @@ class Thread extends Model
 {
     use RecordsActivity;
 
-    protected $fillable = ['user_id', 'title', 'body', 'channel_id', 'updated_at'];
+    protected $fillable = [
+        'user_id',
+        'title',
+        'body',
+        'channel_id',
+        'updated_at',
+        'slug'
+    ];
+
     protected $withCount = ['replies'];
+
     protected $with = ['creator', 'channel'];
+
+    protected $appends = ['path'];
 
     /**
      * @var Visits
@@ -47,6 +59,7 @@ class Thread extends Model
         });
     }
 
+    /* Relations */
     public function replies () {
         return $this->hasMany(Reply::class);
     }
@@ -59,17 +72,12 @@ class Thread extends Model
         return $this->belongsTo(Channel::class);
     }
 
-    public function getRouteUrl () {
-        return route('threads.show', [
-            $this->channel->slug,
-            $this->id
-        ]);
-    }
-
+    /* Scopes */
     public function scopeFilter($query, ThreadsFilters $filters) {
         return $filters->apply($query);
     }
 
+    /* Subscriptions */
     public function subscribe($userId = null) : self {
         $subscribed = $this->subscriptions()
             ->where(["user_id" => $userId ?: auth()->id()])
@@ -96,6 +104,8 @@ class Thread extends Model
             ->where(["user_id" => auth()->id()])
             ->exists();
     }
+
+    /* Last Read */
 
     /**
      * @param User|null $user
@@ -138,6 +148,7 @@ class Thread extends Model
         return $key;
     }
 
+    /* Visits */
     public function visits() {
         return $this->visits;
     }
@@ -145,5 +156,27 @@ class Thread extends Model
     public function getVisitsCountAttribute(): int
     {
         return $this->visits->count();
+    }
+
+    /* Path */
+
+    /**
+     * @return string
+     */
+    public function getPathAttribute () : string {
+        return  $this->channel ? route('threads.show', [
+            $this->channel->slug,
+            $this->slug
+        ]) : '';
+    }
+
+    /**
+     * Determine how to thread been resolve from url
+     *
+     * @return string
+     */
+    public function getRouteKeyName() : string
+    {
+        return 'slug';
     }
 }

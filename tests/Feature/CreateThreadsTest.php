@@ -17,6 +17,7 @@ class CreateThreadsTest extends TestCase
    /** @test */
    public function a_user_may_create_new_threads() {
         $thread = factory(Thread::class)->raw();
+        $this->withoutExceptionHandling();
         $response = $this->publishThread($thread);
         $response->assertRedirect($response->headers->get('Location'));
 

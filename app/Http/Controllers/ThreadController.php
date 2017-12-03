@@ -42,11 +42,9 @@ class ThreadController extends Controller
             return $threads;
         }
 
-
-
         $trends = $trending->get();
 
-        return view('threads.index' ,compact('threads', 'trends'));
+        return view('threads.index', compact('threads', 'trends'));
     }
 
     /**
@@ -76,10 +74,11 @@ class ThreadController extends Controller
 
         $thread = Thread::create(array_merge(
             $request->all(),
+            ['slug' => str_slug($request->title)],
             ['user_id' => auth()->id()]
         ));
 
-        return redirect($thread->getRouteUrl())
+        return redirect($thread->path)
             ->with('flash', 'Your thread has been published!');
     }
 
@@ -116,9 +115,11 @@ class ThreadController extends Controller
     {
         $this->authorize('delete', $thread);
         $thread->delete();
+
         if (request()->wantsJson()) {
             return response('OK', 204);
         }
+
         return redirect(route('threads.index'));
     }
 

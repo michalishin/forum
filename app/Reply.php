@@ -44,7 +44,7 @@ class Reply extends Model
     }
 
     public function getRouteUrl () {
-        return $this->thread->getRouteUrl() . '#reply-' . $this->id;
+        return $this->thread->path . '#reply-' . $this->id;
     }
 
     public function wasJustPublished () {

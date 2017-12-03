@@ -3,7 +3,7 @@
     @slot('header')
         <a href="{{route('user.profile', $subject->creator)}}"> {{$subject->creator->name}} </a>
         posted thread:
-        <a href="{{$subject->getRouteUrl()}}">{{$subject->title}}</a>
+        <a href="{{$subject->path}}">{{$subject->title}}</a>
     @endslot
 
     @slot('body')

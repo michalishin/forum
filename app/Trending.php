@@ -17,11 +17,9 @@ class Trending
     }
 
     public function push (Thread $thread) {
-        return  Redis::zincrby($this->cacheKey(), 1, json_encode([
-            'id' => $thread->id,
-            'title' => $thread->title,
-            'path' => $thread->getRouteUrl()
-        ]));
+        return  Redis::zincrby($this->cacheKey(), 1,
+            json_encode($thread->only('id', 'title', 'path'))
+        );
     }
 
     protected function cacheKey () {

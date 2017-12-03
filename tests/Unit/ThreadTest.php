@@ -43,14 +43,15 @@ class ThreadTest extends TestCase
     }
 
     /** @test */
-    public function it_has_route_params () {
+    public function it_has_a_path () {
         $thread = create(Thread::class);
+
         $this->assertEquals(
-            $thread->getRouteUrl(),
             route('threads.show', [
                 $thread->channel->slug,
-                $thread->id
-            ])
+                $thread->slug
+            ]),
+            $thread->path
         );
     }
 

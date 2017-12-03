@@ -32,7 +32,7 @@ class TrendingThreadTest extends TestCase
 
         $thread = create(Thread::class);
 
-        $this->get($thread->getRouteUrl());
+        $this->get($thread->path);
 
         $trending = $this->trending->get();
 

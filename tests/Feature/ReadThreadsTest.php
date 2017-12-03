@@ -38,7 +38,7 @@ class ReadThreadsTest extends TestCase
              'name' => 'test_user'
            ])
         ]);
-        $response = $this->get($thread->getRouteUrl());
+        $response = $this->get($thread->path);
 
         $response->assertSee($thread->title);
         $response->assertSee($thread->body);
@@ -117,7 +117,8 @@ class ReadThreadsTest extends TestCase
         $this->withExceptionHandling()
             ->delete(route('threads.destroy', $thread))
             ->assertRedirect('login');
-        $this->assertDatabaseHas('threads', $thread->toArray());
+
+        $this->assertDatabaseHas('threads', $thread->only('id'));
     }
 
     /** @test */
@@ -138,7 +139,9 @@ class ReadThreadsTest extends TestCase
         $this->json('DELETE', route('threads.destroy', $thread))
             ->assertStatus(204);
 
-        $this->assertDatabaseMissing('threads', $thread->toArray());
+        $this->assertDatabaseMissing('threads',
+            $thread->only('id')
+        );
 
         $this->assertDatabaseMissing('replies', [
             'id' => $reply->id

@@ -20,6 +20,7 @@ class CreateThreadsTable extends Migration
             $table->foreign('user_id')
                 ->references('id')->on('users');
             $table->unsignedInteger('channel_id');
+            $table->string('slug')->unique();
             $table->string('title');
             $table->text('body');
             $table->timestamps();
