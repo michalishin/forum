@@ -69,6 +69,9 @@ app('router')
 app('router')->post('/api/users/{user}/avatar', 'Api\UsersAvatarController@store')
     ->name('user.avatar.store');
 
+app('router')
+    ->get('/registration/confirm', 'Api\RegisterConfirmationController@index')
+    ->name('register.confirm');
 
 app('router')->auth();
 

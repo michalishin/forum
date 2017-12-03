@@ -11,6 +11,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
  * @property Activity activity
  * @property Collection unreadNotifications
  * @property string name
+ * @property boolean confirmed
  * @property Reply lastReply
  * @property null|string avatar_path
  */
@@ -29,7 +30,7 @@ class User extends Authenticatable
      * @var array
      */
     protected $fillable = [
-        'name', 'email', 'password', 'avatar_path'
+        'name', 'email', 'password', 'avatar_path', 'confirmed'
     ];
 
     /**
@@ -38,10 +39,22 @@ class User extends Authenticatable
      * @var array
      */
     protected $hidden = [
-        'password', 'remember_token', 'avatar_path'
+        'password', 'remember_token', 'avatar_path', 'confirmation_token'
     ];
 
+    /**
+     * Custom attributes
+     * @var array
+     */
     protected $appends = ['avatar'];
+
+    /**
+     * Casts database attributes
+     * @var array
+     */
+    protected $casts = [
+      'confirmed' => 'boolean'
+    ];
 
     public function activities () {
         return $this->hasMany(Activity::class)->with('subject');
@@ -53,5 +66,12 @@ class User extends Authenticatable
 
     public function getAvatarAttribute () {
         return asset('storage/' . ($this->avatar_path ?: 'avatars/default.png')) ;
+    }
+
+    public function confirm ()
+    {
+        $this->confirmed = true;
+
+        $this->save();
     }
 }

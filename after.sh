@@ -9,7 +9,3 @@ sudo apt install php7.2-gd -y
 
 #laravel
 php artisan migrate --seed
-
-#node
-npm run watch &>/dev/null &
-sudo chown -R $USER:$(id -gn $USER) /home/vagrant/.config
