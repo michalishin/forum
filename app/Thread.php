@@ -175,8 +175,31 @@ class Thread extends Model
      *
      * @return string
      */
-    public function getRouteKeyName() : string
+    public function getRouteKeyName () : string
     {
         return 'slug';
+    }
+
+    public function setSlugAttribute ($value)
+    {
+        $slug = str_slug($value);
+        if (static::where('slug', $slug)->exists()) {
+            $slug = $this->incrementSlug($slug);
+        }
+
+        $this->attributes['slug'] = $slug;
+    }
+
+    public function incrementSlug ($slug) {
+        $maxSlug = static::where('slug', 'LIKE', $this->slug . '%')
+            ->latest('id')->value('slug');
+
+        if ($maxSlug !== $slug) {
+            return preg_replace_callback('/(\d+)$/', function ($matches) {
+                return $matches[1] + 1;
+            }, $maxSlug);
+        }
+
+        return $slug . '-2';
     }
 }
