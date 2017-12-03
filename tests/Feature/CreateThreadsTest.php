@@ -13,8 +13,9 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 class CreateThreadsTest extends TestCase
 {
     use RefreshDatabase;
+
    /** @test */
-   public function an_authenticated_user_may_create_new_threads() {
+   public function a_user_may_create_new_threads() {
         $thread = factory(Thread::class)->raw();
         $response = $this->publishThread($thread);
         $response->assertRedirect($response->headers->get('Location'));
@@ -26,7 +27,7 @@ class CreateThreadsTest extends TestCase
    }
 
    /** @test */
-   public function a_user_must_first_confirm_their_email_before_creating_threads ()
+   public function new_users_must_first_confirm_their_email_before_creating_threads ()
    {
        $user = create(User::class, [
            'confirmed' => false
@@ -42,8 +43,6 @@ class CreateThreadsTest extends TestCase
 
     /** @test */
    public function guest_may_not_create_threads () {
-       $this->withExceptionHandling();
-
        $this->get(route('threads.create'))
            ->assertRedirect(route('login'));
 
@@ -52,8 +51,9 @@ class CreateThreadsTest extends TestCase
    }
 
    /** @test */
-   public function an_authenticated_user_may_visit_create_thread_page () {
+   public function a_user_may_visit_create_thread_page () {
        $this->signIn();
+
        $this->get(route('threads.create'))
            ->assertStatus(200);
    }

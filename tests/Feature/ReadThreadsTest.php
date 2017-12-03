@@ -170,6 +170,7 @@ class ReadThreadsTest extends TestCase
     /** @test */
     public function a_user_can_request_all_replies_for_a_given_thread () {
         $thread = create(Thread::class);
+
         create(Reply::class,[
             'thread_id' => $thread->id
         ], 10);
