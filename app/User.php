@@ -12,8 +12,9 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
  * @property Collection unreadNotifications
  * @property string name
  * @property boolean confirmed
- * @property Reply lastReply
+ * @property null|Reply lastReply
  * @property null|string avatar_path
+ * @property null|string confirmation_token
  */
 class User extends Authenticatable
 {
@@ -71,7 +72,7 @@ class User extends Authenticatable
     public function confirm ()
     {
         $this->confirmed = true;
-
+        $this->confirmation_token = null;
         $this->save();
     }
 }
