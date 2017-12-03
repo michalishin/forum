@@ -12,3 +12,4 @@ php artisan migrate --seed
 
 #node
 npm run watch &>/dev/null &
+sudo chown -R $USER:$(id -gn $USER) /home/vagrant/.config

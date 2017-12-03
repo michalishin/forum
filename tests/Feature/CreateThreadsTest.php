@@ -24,6 +24,22 @@ class CreateThreadsTest extends TestCase
             ->assertSee($thread['body']);
 
    }
+
+   /** @test */
+   public function a_user_must_first_confirm_their_email_before_creating_threads ()
+   {
+       $user = create(User::class, [
+           'confirmed' => false
+       ]);
+
+       $this->publishThread([], $user)
+            ->assertRedirect(route('threads.index'))
+            ->assertSessionHas(
+                'flash',
+                'You must first confirm your email address.'
+            );
+   }
+
     /** @test */
    public function guest_may_not_create_threads () {
        $this->withExceptionHandling();
@@ -57,8 +73,8 @@ class CreateThreadsTest extends TestCase
            ->assertSessionHasErrors('channel_id');
    }
 
-   public function publishThread($data = []) {
-       $this->withExceptionHandling()->signIn();
+   public function publishThread($data = [], User $user = null) {
+       $this->withExceptionHandling()->signIn($user);
        $thread = make(Thread::class,$data);
        return $this->post(route('threads.store'), $thread->toArray());
    }

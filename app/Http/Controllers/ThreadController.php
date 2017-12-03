@@ -19,7 +19,11 @@ class ThreadController extends Controller
      */
     public function __construct()
     {
-        $this->middleware('auth')->except(['index', 'show']);
+        $this->middleware('auth')
+            ->except(['index', 'show']);
+
+        $this->middleware('email.require')
+            ->only('store');
     }
 
     /**
@@ -63,15 +67,18 @@ class ThreadController extends Controller
      */
     public function store(Request $request)
     {
+
         $request->validate([
             'title' => 'required|max:255|spam_free',
             'body' => 'required|spam_free',
             'channel_id' => 'required|exists:channels,id'
         ]);
+
         $thread = Thread::create(array_merge(
             $request->all(),
             ['user_id' => auth()->id()]
         ));
+
         return redirect($thread->getRouteUrl())
             ->with('flash', 'Your thread has been published!');
     }
