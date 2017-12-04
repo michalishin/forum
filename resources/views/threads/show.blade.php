@@ -41,7 +41,7 @@
                         </div>
                     </div>
 
-                    <replies tread_id="{{$thread->id}}"
+                    <replies tread_slug="{{$thread->slug}}"
                              @removed="repliesCount --"
                              @added="repliesCount ++">
                     </replies>

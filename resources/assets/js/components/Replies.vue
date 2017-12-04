@@ -1,7 +1,10 @@
 <template>
     <div>
-        <div :key="reply.id" v-for="(reply, index) in items">
-            <reply :data="reply" @deleted="remove(index)"></reply>
+        <div v-for="(reply, index) in items"
+             :key="reply.id">
+            <reply :data="reply"
+                   @best="setBest(reply.id)"
+                   @deleted="remove(index)"></reply>
         </div>
 
         <paginator :dataSet="dataSet" @change-page="fetch"></paginator>
@@ -15,7 +18,7 @@
     import NewReply from './NewReply.vue'
     import collection from '../mixins/collection'
     export default {
-        props: ['tread_id'],
+        props: ['tread_slug'],
 
         mixins: [collection],
 
@@ -24,7 +27,7 @@
         data () {
             return {
                 dataSet: false,
-                endpoint: '/threads/' + this.tread_id + '/replies'
+                endpoint: '/threads/' + this.tread_slug + '/replies'
             }
         },
 
@@ -51,6 +54,10 @@
                 this.items = data.data
 
                 window.scrollTo(0, 0)
+            },
+
+            setBest (id) {
+                this.items.forEach(item => item.is_best = item.id === id)
             }
         }
     }
