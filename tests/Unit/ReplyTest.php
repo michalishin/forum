@@ -4,6 +4,7 @@ namespace Tests\Unit;
 
 use App\Reply;
 use App\Favorite;
+use App\Thread;
 use App\User;
 use Carbon\Carbon;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
@@ -66,5 +67,18 @@ class ReplyTest extends TestCase
             $reply->body,
             "Hello <a href=\"/profiles/{$user->name}\">@{$user->name}</a>"
         );
+    }
+
+    /** @test */
+    public function it_knows_if_it_is_the_best () {
+        $reply = create(Reply::class);
+
+        $this->assertFalse($reply->is_best);
+
+        $reply->thread->update([
+           'best_reply_id' => $reply->id
+        ]);
+
+        $this->assertTrue($reply->fresh()->is_best);
     }
 }

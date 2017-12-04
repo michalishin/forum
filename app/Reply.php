@@ -60,6 +60,10 @@ class Reply extends Model
     }
 
 
+    public function getIsBestAttribute () {
+        return $this->id == $this->thread->best_reply_id;
+    }
+
     public function setBodyAttribute ($body) {
         $this->attributes['body'] = preg_replace(
             '/@([\w\-]+)/',

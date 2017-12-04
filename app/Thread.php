@@ -19,6 +19,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property Carbon updated_at
  * @property string body
  * @property string slug
+ * @property integer best_reply_id
  * @method static self create(array $data)
  * @package App
  */
@@ -32,7 +33,7 @@ class Thread extends Model
         'body',
         'channel_id',
         'updated_at',
-        'slug'
+        'best_reply_id'
     ];
 
     protected $withCount = ['replies'];
@@ -206,5 +207,14 @@ class Thread extends Model
         }
 
         return $slug . '-2';
+    }
+
+    public function markBestReply (Reply $reply) : self
+    {
+        $this->update([
+            'best_reply_id' => $reply->id
+        ]);
+
+        return $this;
     }
 }
