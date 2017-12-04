@@ -46,6 +46,7 @@ class Thread extends Model
      */
     protected $visits;
 
+    /* Boot */
     public function __construct(array $attributes = [])
     {
         parent::__construct($attributes);
@@ -56,6 +57,10 @@ class Thread extends Model
         parent::boot();
         static::deleting(function (self $thread) {
             $thread->replies->each->delete();
+        });
+
+        static::creating(function (self $thread) {
+            $thread->slug = $thread->title;
         });
     }
 

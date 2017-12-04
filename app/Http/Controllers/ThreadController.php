@@ -74,7 +74,6 @@ class ThreadController extends Controller
 
         $thread = Thread::create(array_merge(
             $request->all(),
-            ['slug' => $request->title],
             ['user_id' => auth()->id()]
         ));
 

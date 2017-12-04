@@ -76,7 +76,7 @@ class CreateThreadsTest extends TestCase
 
    /** @test */
    public function a_thread_require_a_unique_slug () {
-       create(Thread::class, ['slug' => 'test1']);
+       create(Thread::class, ['title' => 'test1']);
 
        $this->assertDatabaseHas('threads', [
            'slug' => 'test1'
