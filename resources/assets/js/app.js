@@ -9,6 +9,22 @@ require('./bootstrap');
 
 window.Vue = require('vue');
 
+import authorizations from './authorizations'
+
+let user = window.App.user
+
+window.Vue.prototype.authorize = (...params) => {
+    if (!window.App.signedIn) return false;
+
+    if (typeof params[0] === 'string'){
+        return authorizations[params[0]](params[1]);
+    }
+
+    return params[0](user)
+}
+
+window.Vue.prototype.signedIn = window.App.signedIn
+
 window.events = new Vue(); // Event emitter
 
 window.flash = (message, level = 'success') => {

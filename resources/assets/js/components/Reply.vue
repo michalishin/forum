@@ -1,17 +1,17 @@
 <template>
     <div :id="'reply-' + id"
          class="panel"
-         :class="this.data.is_best ? 'panel-success' : 'panel-default'">
+         :class="reply.is_best ? 'panel-success' : 'panel-default'">
         <div class="panel-heading">
             <div class="level">
                 <h5 class="flex">
-                    <a :href="'profiles /'+ data.owner.name" v-text="data.owner.name"></a>
+                    <a :href="'profiles /'+ reply.owner.name" v-text="reply.owner.name"></a>
                     said
                     <span v-text="ago"></span>...
                 </h5>
 
                 <div v-if="signedIn">
-                    <favorite :reply="data"></favorite>
+                    <favorite :reply="reply"></favorite>
                 </div>
             </div>
 
@@ -29,12 +29,13 @@
             <div v-else v-html="body"></div>
         </div>
         <!--@can('delete', $reply)-->
-        <div class="panel-footer level" v-if="canUpdate || canMarkReplyAsBest">
+        <div class="panel-footer level"
+             v-if="authorize('updateReply', reply) || canMarkReplyAsBest">
             <div class="btn btn-xs mr-1"
-                 v-if="canUpdate"
+                 v-if="authorize('updateReply', reply)"
                  @click="editing = true">Edit</div>
             <div class="btn btn-xs btn-danger mr-1"
-                 v-if="canUpdate"
+                 v-if="authorize('updateReply', reply)"
                  @click="destroy">Delete</div>
             <div class="btn btn-xs btn-default ml-a"
                  v-if="canMarkReplyAsBest"
@@ -50,57 +51,48 @@
     export default {
         components: {Favorite},
 
-        props: ['data'],
+        props: ['reply'],
 
         data () {
             return {
-                body: this.data.body,
+                body: this.reply.body,
                 editing: false,
-                id: this.data.id
+                id: this.reply.id
             }
         },
 
         methods: {
             update () {
-                axios.put('/replies/' + this.data.id, {
+                axios.put('/replies/' + this.reply.id, {
                     body: this.body
                 }).then(response => {
                     flash('Updated!')
                     this.editing = false
                 }).catch(error => {
-                    flash(error.response.data.message, 'danger')
+                    flash(error.response.reply.message, 'danger')
                 })
 
             },
 
             destroy () {
-                axios.delete('/replies/' + this.data.id)
+                axios.delete('/replies/' + this.reply.id)
                 flash('Reply was deleted!')
-                this.$emit('deleted', this.data.id)
+                this.$emit('deleted', this.reply.id)
             },
 
             markBestReply () {
-                axios.post('/replies/' + this.data.id + '/best').then(response => {
+                axios.post('/replies/' + this.reply.id + '/best').then(response => {
                     this.$emit('best')
                 })
             }
         },
         computed: {
-            canUpdate () {
-                return this.autorize(user => this.data.user_id === user.id)
-            },
-
             canMarkReplyAsBest () {
-                return this.autorize(user => this.data.thread.user_id === user.id)
-                    && !this.data.is_best
-            },
-
-            signedIn () {
-                return window.App.signedIn
+                return this.authorize('updateThread', this.reply.thread) && !this.reply.is_best
             },
 
             ago () {
-                return moment(this.data.created_at).fromNow()
+                return moment(this.reply.created_at).fromNow()
             }
         }
     }

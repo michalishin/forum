@@ -2,7 +2,7 @@
     <div>
         <div v-for="(reply, index) in items"
              :key="reply.id">
-            <reply :data="reply"
+            <reply :reply="reply"
                    @best="setBest(reply.id)"
                    @deleted="remove(index)"></reply>
         </div>

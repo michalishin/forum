@@ -33,12 +33,6 @@
             }
         },
 
-        computed: {
-            signedIn () {
-                return window.App.signedIn
-            }
-        },
-
         mounted () {
             $(this.$refs.body).atwho({
                 at: '@',

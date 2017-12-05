@@ -25,7 +25,7 @@
 
         computed: {
             canUpdate () {
-                return this.autorize(user => user.id === this.user.id)
+                return this.authorize(user => user.id === this.user.id)
             }
         },
 
