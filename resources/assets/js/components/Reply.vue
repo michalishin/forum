@@ -88,7 +88,8 @@
         },
         computed: {
             canMarkReplyAsBest () {
-                return this.authorize('updateThread', this.reply.thread) && !this.reply.is_best
+                return this.authorize('updateThread', this.reply.thread)
+                    && !this.reply.is_best
             },
 
             ago () {

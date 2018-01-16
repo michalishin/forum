@@ -13,6 +13,7 @@ $factory->define(App\Thread::class, function (Faker $faker) {
             return factory(\App\Channel::class)->create()->id;
         },
         'title' => $title,
+        'locked' => false,
         'body' => $faker->paragraph(10)
     ];
 });

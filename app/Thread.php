@@ -33,7 +33,8 @@ class Thread extends Model
         'body',
         'channel_id',
         'updated_at',
-        'best_reply_id'
+        'best_reply_id',
+        'locked'
     ];
 
     protected $withCount = ['replies'];
@@ -216,5 +217,17 @@ class Thread extends Model
         ]);
 
         return $this;
+    }
+
+    public function lock () {
+        $this->update([
+           'locked' => true
+        ]);
+    }
+
+    public function unlock () {
+        $this->update([
+            'locked' => false
+        ]);
     }
 }

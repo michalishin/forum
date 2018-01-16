@@ -54,6 +54,13 @@ class Handler extends ExceptionHandler
                'message' => $exception->getMessage()
             ], 429);
         }
+
+        if ($exception instanceof ThreadLockException) {
+            return response([
+                'message' => $exception->getMessage()
+            ], 422);
+        }
+
         return parent::render($request, $exception);
     }
 }

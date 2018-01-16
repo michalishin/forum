@@ -3,6 +3,7 @@
 namespace App;
 
 use App\Events\ThreadHasNewReply;
+use App\Exceptions\ThreadLockException;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
@@ -26,13 +27,10 @@ class Reply extends Model
         static::created(function (self $reply) {
             event(new ThreadHasNewReply($reply));
         });
-
-        static::deleted(function (self $reply) {
-//            if ($reply->is_best) {
-//                $reply->thread->update([
-//                   'best_reply_id' => null
-//                ]);
-//            }
+        static::creating(function (self $reply) {
+            if ($reply->thread->locked) {
+                throw new ThreadLockException('Thread is locked');
+            }
         });
     }
 

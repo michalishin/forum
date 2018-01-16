@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Exceptions\ThreadLockException;
 use App\Http\Requests\CreateReplyRequest;
 use App\Http\Requests\DeleteReplyRequest;
 use App\Http\Requests\UpdateReplyRequest;
