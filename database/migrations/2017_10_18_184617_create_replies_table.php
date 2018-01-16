@@ -25,6 +25,7 @@ class CreateRepliesTable extends Migration
             $table->text('body');
             $table->timestamps();
         });
+
     }
 
     /**
@@ -34,6 +35,9 @@ class CreateRepliesTable extends Migration
      */
     public function down()
     {
+        Schema::table('threads', function (Blueprint $table) {
+            $table->dropForeign(['best_reply_id']);
+        });
         Schema::dropIfExists('replies');
     }
 }

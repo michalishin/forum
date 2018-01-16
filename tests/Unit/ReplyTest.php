@@ -79,6 +79,7 @@ class ReplyTest extends TestCase
            'best_reply_id' => $reply->id
         ]);
 
+
         $this->assertTrue($reply->fresh()->is_best);
     }
 }

@@ -13,7 +13,7 @@ class CreateThreadsTable extends Migration
      */
     public function up()
     {
-
+        Schema::disableForeignKeyConstraints();
         Schema::create('threads', function (Blueprint $table) {
             $table->increments('id');
             $table->unsignedInteger('user_id');
@@ -24,6 +24,8 @@ class CreateThreadsTable extends Migration
             $table->string('title');
             $table->text('body');
             $table->unsignedInteger('best_reply_id')->nullable();
+            $table->foreign('best_reply_id')
+                ->references('id')->on('replies')->onDelete('set null');
             $table->timestamps();
         });
     }

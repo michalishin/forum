@@ -15,6 +15,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property User owner
  * @property Carbon created_at
  * @property Carbon updated_at
+ * @property bool is_best
  */
 class Reply extends Model
 {
@@ -24,16 +25,21 @@ class Reply extends Model
         parent::boot();
         static::created(function (self $reply) {
             event(new ThreadHasNewReply($reply));
+        });
 
-            $reply->thread->update([
-                'updated_at' => Carbon::now()
-            ]);
+        static::deleted(function (self $reply) {
+//            if ($reply->is_best) {
+//                $reply->thread->update([
+//                   'best_reply_id' => null
+//                ]);
+//            }
         });
     }
 
     protected $with = ['owner', 'thread', 'favorites'];
     protected $fillable = ['body', 'user_id'];
     protected $appends = ['favorites_count', 'is_favorited', 'is_best'];
+    protected $touches = ['thread'];
 
     public function owner () {
         return $this->belongsTo(User::class, 'user_id');

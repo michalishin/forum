@@ -14,6 +14,13 @@ abstract class TestCase extends BaseTestCase
 {
     use CreatesApplication;
 
+    protected function setUp()
+    {
+        parent::setUp();
+        \Schema::enableForeignKeyConstraints();
+    }
+
+
     public function signIn ($user = null) {
         $user = $user ?  : create(User::class);
         $this->be($user);
