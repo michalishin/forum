@@ -103,6 +103,18 @@ class ThreadController extends Controller
     }
 
     /**
+     * @param Channel $channel
+     * @param Thread $thread
+     * @return \Illuminate\Contracts\Routing\ResponseFactory|\Symfony\Component\HttpFoundation\Response
+     * @throws \Illuminate\Auth\Access\AuthorizationException
+     */
+    public function update(Channel $channel, Thread $thread) {
+        $this->authorize('update', $thread);
+
+        request('locked') ? $thread->lock() : $thread->unlock();
+    }
+
+    /**
      * Remove the specified resource from storage.
      *
      * @param  \App\Thread $thread

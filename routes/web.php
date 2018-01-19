@@ -22,6 +22,10 @@ app('router')
     ->name('threads.show');
 
 app('router')
+    ->patch('threads/{channel}/{thread}', 'ThreadController@update')
+    ->name('threads.update');
+
+app('router')
     ->post('threads/{thread}/subscriptions', 'ThreadSubscriptionController@store')
     ->name('threads.subscribe');
 

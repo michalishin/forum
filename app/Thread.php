@@ -27,6 +27,10 @@ class Thread extends Model
 
     protected $appends = ['path'];
 
+    protected $casts = [
+        'locked' => 'bool'
+    ];
+
     /**
      * @var Visits
      */

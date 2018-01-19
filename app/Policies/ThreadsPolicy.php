@@ -42,6 +42,9 @@ class ThreadsPolicy
      */
     public function update(User $user, Thread $thread)
     {
+        if (request()->has('locked'))
+            return auth()->user()->is_admin;
+
         return $thread->user_id == $user->id;
     }
 
