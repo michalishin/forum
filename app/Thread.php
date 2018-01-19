@@ -7,22 +7,6 @@ use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 
-/**
- * Class Thread
- * @property Channel channel
- * @property integer id
- * @property User creator
- * @property int user_id
- * @property Collection replies
- * @property Collection subscriptions
- * @property string title
- * @property Carbon updated_at
- * @property string body
- * @property string slug
- * @property integer best_reply_id
- * @method static self create(array $data)
- * @package App
- */
 class Thread extends Model
 {
     use RecordsActivity;
