@@ -3,6 +3,7 @@
 @section('content')
     <thread-view inline-template
                  v-cloak
+                 :lock="{{json_encode($thread->locked)}}"
                  :initial-replies-count="{{$thread->replies_count}}">
         <div class="container">
             <div class="row">
@@ -42,6 +43,7 @@
                     </div>
 
                     <replies tread_slug="{{$thread->slug}}"
+                             :locked="locked"
                              @removed="repliesCount --"
                              @added="repliesCount ++">
                     </replies>
@@ -62,6 +64,11 @@
                                         id="{{$thread->id}}"
                                         :active="{{$thread->is_subscribed_to ? 'true' : 'false'}}"
                                 ></subscribe-button>
+
+                                <lock-button
+                                        @lock="locked = $event"
+                                        :thread="{{$thread}}"
+                                ></lock-button>
                             </p>
                         </div>
                     </div>

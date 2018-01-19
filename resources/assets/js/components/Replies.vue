@@ -9,7 +9,7 @@
 
         <paginator :dataSet="dataSet" @change-page="fetch"></paginator>
 
-        <new-reply :endpoint="endpoint" @created="add"></new-reply>
+        <new-reply :endpoint="endpoint" @created="add" v-if="!locked"></new-reply>
     </div>
 </template>
 
@@ -18,7 +18,7 @@
     import NewReply from './NewReply.vue'
     import collection from '../mixins/collection'
     export default {
-        props: ['tread_slug'],
+        props: ['tread_slug', 'locked'],
 
         mixins: [collection],
 

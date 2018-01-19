@@ -7,5 +7,9 @@ export default {
 
     updateThread (thread) {
         return thread.user_id === user.id
+    },
+
+    admin () {
+        return user.is_admin
     }
 }
